@@ -18,10 +18,22 @@ complexOperationsContainer.className = 'complex-operations-container';
 calculatorContainer.appendChild(complexOperationsContainer);
 calculatorContainer.appendChild(basicCalculatorContainer);
 
-buttons.forEach(({ icon, operation, type }) => {
+const updateDisplay = (value) => {
+  calculatorDisplay.textContent += value;
+};
+
+const handleButtonClick = (buttonValue) => {
+  updateDisplay(buttonValue);
+};
+
+buttons.forEach(({ icon, value, operation, type }) => {
   const button = document.createElement('button');
   button.textContent = icon;
   button.className = `${type}-btn`;
+
+  if (value) {
+    button.addEventListener('click', () => handleButtonClick(value));
+  }
 
   if (icon === '0') {
     button.className += ' big';
