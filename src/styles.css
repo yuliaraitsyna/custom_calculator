@@ -55,19 +55,24 @@
     grid-template-rows: repeat(5, auto);
 }
 
-.complex-operations-container > [class$="btn"] {
+.complex-operations-container > [class*="btn"] {
     background-color: var(--bg-dark2-color);
 }
 
-.basic-calculator-container > [class$="btn"] {
+.basic-calculator-container > [class*="btn"] {
     background-color: var(--bg-dark3-color);
 }
 
-.basic-calculator-container > .operation {
+.basic-calculator-container > [class*="btn"].operation {
     background-color: var(--highlight-color);
 }
 
-.basic-calculator-container > .upper {
+.basic-calculator-container > [class*="btn"].big {
+    grid-column: 1 / 3;
+    width: 150px;
+}
+
+.basic-calculator-container > [class*="btn"].upper {
     background-color: var(--bg-dark2-color);
 }
 

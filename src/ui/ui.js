@@ -23,6 +23,10 @@ buttons.forEach(({ icon, operation, type }) => {
   button.textContent = icon;
   button.className = `${type}-btn`;
 
+  if (icon === '0') {
+    button.className += ' big';
+  }
+
   switch (type) {
     case 'complex':
       complexOperationsContainer.appendChild(button);
