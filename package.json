@@ -32,6 +32,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@flaticon/flaticon-uicons": "^3.3.1",
     "husky-init": "^8.0.0"
   },
   "lint-staged": {
