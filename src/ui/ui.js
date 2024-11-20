@@ -1,5 +1,5 @@
 import { Calculator } from '../calculator/calculator';
-import { Add } from '../calculator/calculator';
+import { Add, Subtract, Multiply, Clear } from '../calculator/calculator';
 import { buttons } from '../model/buttons';
 
 const calculatorContainer = document.createElement('div');
@@ -21,6 +21,8 @@ calculatorContainer.appendChild(complexOperationsContainer);
 calculatorContainer.appendChild(basicCalculatorContainer);
 
 let currentValue = '';
+let isAlreadyFloating = false;
+
 const calculator = new Calculator();
 
 const updateDisplay = (value) => {
@@ -31,7 +33,16 @@ const updateDisplay = (value) => {
 const handleButtonClick = ({ operation, value }) => {
   if (operation) {
     handleOperationButtonClick(operation);
-  } else if (value !== undefined) {
+  } else if (value) {
+    if (value === '.' && isAlreadyFloating) {
+      return;
+    }
+    if (value === '.') {
+      if (!currentValue) {
+        return;
+      }
+      isAlreadyFloating = true;
+    }
     updateDisplay(value);
   }
 };
@@ -47,18 +58,37 @@ const handleOperationButtonClick = (operation) => {
       calculator.setPreviousValue(calculator.currentValue);
       currentValue = '';
       break;
+    case 'subtract':
+      calculator.setOperation(new Subtract());
+      calculator.setPreviousValue(calculator.currentValue);
+      currentValue = '';
+      break;
+    case 'multiply':
+      calculator.setOperation(new Multiply());
+      calculator.setPreviousValue(calculator.currentValue);
+      currentValue = '';
+      break;
     case 'equal':
       if (!calculator.operation) {
         console.error('No operation set!');
         return;
       }
+      console.log(calculator.operation);
       calculator.executeOperation(calculator.operation);
+      calculator.setOperation(null);
       calculatorDisplay.textContent = calculator.previousValue;
+      currentValue = '';
+      break;
+    case 'clear':
+      calculator.executeOperation(new Clear());
+      calculatorDisplay.textContent = '';
       currentValue = '';
       break;
     default:
       console.error('Unknown operation:', operation);
   }
+
+  isAlreadyFloating = false;
 };
 
 export const buttonsCollection = buttons.map((button) => {

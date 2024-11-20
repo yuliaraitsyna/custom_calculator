@@ -7,15 +7,14 @@ class Calculator {
     this.previousValue = null;
     this.history = [];
     this.operation = null;
-    this.isFloat = false;
   }
 
   executeOperation(operation) {
-    console.log('P, C', this.previousValue, this.currentValue);
     this.previousValue = operation.execute(
       this.previousValue,
       this.currentValue,
     );
+
     this.currentValue = null;
     //this.history.push(operation);
   }
@@ -34,11 +33,8 @@ class Calculator {
 }
 
 class Add {
-  constructor() {}
-
   execute(previousValue, currentValue) {
     try {
-      console.log(previousValue, currentValue);
       let result = previousValue + currentValue;
 
       if (!isValid(result)) {
@@ -53,13 +49,9 @@ class Add {
 }
 
 class Subtract {
-  constructor(subtractionValue) {
-    this.subtractionValue = subtractionValue;
-  }
-
-  execute(currentValue) {
+  execute(previousValue, currentValue) {
     try {
-      let result = currentValue - this.subtractionValue;
+      let result = previousValue - currentValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -74,13 +66,9 @@ class Subtract {
 }
 
 class Multiply {
-  constructor(multiplicationValue) {
-    this.multiplicationValue = multiplicationValue;
-  }
-
-  execute(currentValue) {
+  execute(previousValue, currentValue) {
     try {
-      let result = currentValue * this.multiplicationValue;
+      let result = previousValue * currentValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -95,17 +83,13 @@ class Multiply {
 }
 
 class Divide {
-  constructor(divisionValue) {
-    this.divisionValue = divisionValue;
-  }
-
-  execute(currentValue) {
+  execute(previousValue, currentValue) {
     try {
       if (this.divisionValue === 0) {
         throw new Error('Error: division by 0');
       }
 
-      let result = currentValue / this.divisionValue;
+      let result = previousValue / currentValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
