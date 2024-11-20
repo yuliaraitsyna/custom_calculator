@@ -1,25 +1,78 @@
-import { Add, Subtract, Multiply, Clear } from '../calculator/calculator';
+import {
+  Add,
+  Subtract,
+  Multiply,
+  Divide,
+  Percent,
+  Negate,
+  Square,
+  Cube,
+  SquareRoot,
+  CubeRoot,
+  Power,
+  TenPower,
+  NthRoot,
+  DivideByN,
+  Factorial,
+  Clear,
+} from '../calculator/calculator';
 
 export const handleOperation = (operation, calculator) => {
+  if (operation !== 'equal' && operation !== 'clear') {
+    calculator.setPreviousValue(calculator.currentValue);
+  }
+
   switch (operation) {
     case 'add':
       calculator.setOperation(new Add());
-      calculator.setPreviousValue(calculator.currentValue);
       break;
     case 'subtract':
       calculator.setOperation(new Subtract());
-      calculator.setPreviousValue(calculator.currentValue);
       break;
     case 'multiply':
       calculator.setOperation(new Multiply());
-      calculator.setPreviousValue(calculator.currentValue);
+      break;
+    case 'divide':
+      calculator.setOperation(new Divide());
+      break;
+    case 'percent':
+      calculator.executeOperation(new Percent());
+      break;
+    case 'negate':
+      calculator.executeOperation(new Negate());
+      break;
+    case 'square':
+      calculator.executeOperation(new Square());
+      break;
+    case 'cube':
+      calculator.executeOperation(new Cube());
+      break;
+    case 'squareRoot':
+      calculator.executeOperation(new SquareRoot());
+      break;
+    case 'cubeRoot':
+      calculator.executeOperation(new CubeRoot());
+      break;
+    case 'power':
+      calculator.setOperation(new Power());
+      break;
+    case 'tenPower':
+      calculator.executeOperation(new TenPower());
+      break;
+    case 'nthRoot':
+      calculator.setOperation(new NthRoot());
+      break;
+    case 'reciprocal':
+      calculator.executeOperation(new DivideByN());
+      break;
+    case 'factorial':
+      calculator.executeOperation(new Factorial());
       break;
     case 'equal':
       if (!calculator.operation) {
         console.error('No operation set!');
         return;
       }
-
       calculator.executeOperation(calculator.operation);
       calculator.setOperation(null);
       break;

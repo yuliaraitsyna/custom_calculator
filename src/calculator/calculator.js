@@ -18,15 +18,28 @@ class Calculator {
     );
 
     this.currentValue = 0;
-    //this.history.push(operation);
   }
 
   setCurrentValue(value) {
-    this.currentValue = value;
+    try {
+      if (!isValid(value)) {
+        throw new Error('Error: value is out of bounds');
+      }
+      this.currentValue = value;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   setPreviousValue(value) {
-    this.previousValue = value;
+    try {
+      if (!isValid(value)) {
+        throw new Error('Error: value is out of bounds');
+      }
+      this.previousValue = value;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   setOperation(operation) {
@@ -108,20 +121,60 @@ class Divide {
 }
 
 class Square {
-  execute(currentValue) {
-    if (!isValid(currentValue)) {
+  execute(base) {
+    let result = base ** 2;
+
+    if (!isValid(result)) {
       throw new Error('Error: value is out of bounds');
     }
-    return currentValue ** 2;
+
+    return result;
   }
 }
 
 class Cube {
-  execute(currentValue) {
-    if (!isValid(currentValue)) {
+  execute(base) {
+    let result = base ** 3;
+
+    if (!isValid(result)) {
       throw new Error('Error: value is out of bounds');
     }
-    return currentValue ** 3;
+
+    return result;
+  }
+}
+
+class Power {
+  execute(previousValue, currentValue) {
+    try {
+      let result = previousValue ** currentValue;
+
+      if (!isValid(result)) {
+        throw new Error('Error: value is out of bounds');
+      }
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+}
+
+class TenPower {
+  execute(currentValue) {
+    try {
+      let result = 10 ** currentValue;
+
+      if (!isValid(result)) {
+        throw new Error('Error: value is out of bounds');
+      }
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 }
 
@@ -130,20 +183,47 @@ class SquareRoot {
     if (currentValue < 0) {
       throw new Error('Error: square root of a negative number');
     }
+
     if (!isValid(currentValue)) {
       throw new Error('Error: value is out of bounds');
     }
-    return Math.sqrt(currentValue);
+
+    return currentValue ** 0.5;
+  }
+}
+
+class CubeRoot {
+  execute(currentValue) {
+    if (!isValid(currentValue)) {
+      throw new Error('Error: value is out of bounds');
+    }
+
+    return currentValue ** (1 / 3);
+  }
+}
+
+class NthRoot {
+  execute(base, root) {
+    if (root === 0) {
+      throw new Error("Error: can't take 0th root");
+    } else if (base < 0 && root % 2 === 0) {
+      throw new Error('Error: impossible to take even root of negative number');
+    }
+
+    return base ** (1 / root);
   }
 }
 
 class Percent {
   execute(currentValue) {
     try {
-      if (!isValid(currentValue)) {
+      let result = currentValue / 100;
+
+      if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
       }
-      return currentValue / 100;
+
+      return result;
     } catch (error) {
       console.error(error);
       return null;
@@ -154,6 +234,47 @@ class Percent {
 class Negate {
   execute(currentValue) {
     return -currentValue;
+  }
+}
+
+class DivideByN {
+  execute(currentValue) {
+    try {
+      if (currentValue === 0) {
+        throw new Error("Error: can't divide by 0");
+      }
+      return 1 / currentValue;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+}
+
+class Factorial {
+  execute(currentValue) {
+    try {
+      if (!isValid(currentValue)) {
+        throw new Error('Error: value is out of bounds');
+      }
+
+      if (currentValue - parseInt(currentValue) !== 0) {
+        throw new Error('Error: value is not an integer');
+      }
+
+      if (currentValue < 0) {
+        throw new Error('Error: factorial of a negative number is undefined');
+      }
+
+      if (currentValue === 0 || currentValue === 1) {
+        return 1;
+      }
+
+      return currentValue * this.execute(currentValue - 1);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 }
 
@@ -177,7 +298,13 @@ export {
   Square,
   Cube,
   SquareRoot,
+  CubeRoot,
+  NthRoot,
   Percent,
   Negate,
+  Power,
+  TenPower,
+  DivideByN,
+  Factorial,
   Clear,
 };

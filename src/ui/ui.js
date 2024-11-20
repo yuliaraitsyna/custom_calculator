@@ -56,6 +56,20 @@ const handleOperationButtonClick = (operation) => {
 
   if (['equal', 'clear'].includes(operation)) {
     calculatorDisplay.textContent = calculator.previousValue;
+  } else if (
+    [
+      'percent',
+      'negate',
+      'square',
+      'cube',
+      'squareRoot',
+      'cubeRoot',
+      'tenPower',
+      'reciprocal',
+      'factorial',
+    ].includes(operation)
+  ) {
+    calculatorDisplay.textContent = calculator.previousValue;
   }
 
   currentValue = '';
@@ -68,6 +82,10 @@ export const buttonsCollection = buttons.map((button) => {
   const buttonElement = document.createElement('button');
   buttonElement.textContent = icon;
   buttonElement.className = `${type}-btn`;
+
+  if (!operation && !value) {
+    buttonElement.className += ' disabled';
+  }
 
   buttonElement.addEventListener('click', () =>
     handleButtonClick({ operation, value }),
