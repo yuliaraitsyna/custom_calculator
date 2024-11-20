@@ -1,6 +1,8 @@
 const isValid = (result) =>
   result < Number.MAX_SAFE_INTEGER && result > Number.MIN_SAFE_INTEGER;
 
+const ROUNDING = 1e12;
+
 class Calculator {
   constructor() {
     this.currentValue = 0;
@@ -35,7 +37,8 @@ class Calculator {
 class Add {
   execute(previousValue, currentValue) {
     try {
-      let result = previousValue + currentValue;
+      let result =
+        (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -51,7 +54,8 @@ class Add {
 class Subtract {
   execute(previousValue, currentValue) {
     try {
-      let result = previousValue - currentValue;
+      let result =
+        (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
