@@ -3,35 +3,43 @@ const isValid = (result) =>
 
 class Calculator {
   constructor() {
-    this.value = null;
+    this.currentValue = null;
+    this.previousValue = null;
     this.history = [];
     this.operation = null;
     this.isFloat = false;
   }
 
   executeOperation(operation) {
-    this.value = operation.execute(this.value);
-    this.history.push(operation);
+    console.log('P, C', this.previousValue, this.currentValue);
+    this.previousValue = operation.execute(
+      this.previousValue,
+      this.currentValue,
+    );
+    this.currentValue = null;
+    //this.history.push(operation);
+  }
+
+  setCurrentValue(value) {
+    this.currentValue = value;
+  }
+
+  setPreviousValue(value) {
+    this.previousValue = value;
+  }
+
+  setOperation(operation) {
+    this.operation = operation;
   }
 }
 
 class Add {
-  constructor(additionValue) {
-    try {
-      if (!isValid(additionValue)) {
-        throw new Error('Error: value is out of bounds');
-      }
+  constructor() {}
 
-      this.additionValue = additionValue;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  execute(currentValue) {
+  execute(previousValue, currentValue) {
     try {
-      let result = currentValue + this.additionValue;
+      console.log(previousValue, currentValue);
+      let result = previousValue + currentValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -40,28 +48,18 @@ class Add {
       return result;
     } catch (error) {
       console.error(error);
-      return null;
     }
   }
 }
 
 class Subtract {
   constructor(subtractionValue) {
-    try {
-      if (!isValid(subtractionValue)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      this.subtractionValue = subtractionValue;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+    this.subtractionValue = subtractionValue;
   }
 
   execute(currentValue) {
     try {
-      let result = currentValue + this.subtractionValue;
+      let result = currentValue - this.subtractionValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -77,16 +75,7 @@ class Subtract {
 
 class Multiply {
   constructor(multiplicationValue) {
-    try {
-      if (!isValid(multiplicationValue)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      this.additionValue = multiplicationValue;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+    this.multiplicationValue = multiplicationValue;
   }
 
   execute(currentValue) {
@@ -112,11 +101,11 @@ class Divide {
 
   execute(currentValue) {
     try {
-      let result = currentValue / this.divisionValue;
-
-      if (!currentValue || !this.divisionValue) {
+      if (this.divisionValue === 0) {
         throw new Error('Error: division by 0');
       }
+
+      let result = currentValue / this.divisionValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -130,9 +119,47 @@ class Divide {
   }
 }
 
-class TakePercent {
+class Square {
   execute(currentValue) {
-    return currentValue / 100;
+    if (!isValid(currentValue)) {
+      throw new Error('Error: value is out of bounds');
+    }
+    return currentValue ** 2;
+  }
+}
+
+class Cube {
+  execute(currentValue) {
+    if (!isValid(currentValue)) {
+      throw new Error('Error: value is out of bounds');
+    }
+    return currentValue ** 3;
+  }
+}
+
+class SquareRoot {
+  execute(currentValue) {
+    if (currentValue < 0) {
+      throw new Error('Error: square root of a negative number');
+    }
+    if (!isValid(currentValue)) {
+      throw new Error('Error: value is out of bounds');
+    }
+    return Math.sqrt(currentValue);
+  }
+}
+
+class Percent {
+  execute(currentValue) {
+    try {
+      if (!isValid(currentValue)) {
+        throw new Error('Error: value is out of bounds');
+      }
+      return currentValue / 100;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 }
 
@@ -144,6 +171,10 @@ class Negate {
 
 class Clear {
   execute() {
+    this.value = null;
+    this.history = [];
+    this.operation = null;
+    this.isFloat = false;
     return null;
   }
 }
@@ -154,7 +185,10 @@ export {
   Subtract,
   Multiply,
   Divide,
-  TakePercent,
+  Square,
+  Cube,
+  SquareRoot,
+  Percent,
   Negate,
   Clear,
 };

@@ -52,5 +52,5 @@ export const buttons = [
   { icon: '+', value: null, operation: 'add', type: 'basic' },
   { icon: '0', value: '0', operation: null, type: 'basic' },
   { icon: '.', value: '.', operation: null, type: 'basic' },
-  { icon: '=', value: null, operation: 'equals', type: 'basic' },
+  { icon: '=', value: null, operation: 'equal', type: 'basic' },
 ];
