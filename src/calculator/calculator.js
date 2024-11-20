@@ -3,8 +3,8 @@ const isValid = (result) =>
 
 class Calculator {
   constructor() {
-    this.currentValue = null;
-    this.previousValue = null;
+    this.currentValue = 0;
+    this.previousValue = 0;
     this.history = [];
     this.operation = null;
   }
@@ -15,7 +15,7 @@ class Calculator {
       this.currentValue,
     );
 
-    this.currentValue = null;
+    this.currentValue = 0;
     //this.history.push(operation);
   }
 
@@ -155,7 +155,8 @@ class Negate {
 
 class Clear {
   execute() {
-    this.value = null;
+    this.currentValue = 0;
+    this.previousValue = 0;
     this.history = [];
     this.operation = null;
     this.isFloat = false;

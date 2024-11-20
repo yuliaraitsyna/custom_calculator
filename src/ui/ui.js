@@ -1,5 +1,5 @@
 import { Calculator } from '../calculator/calculator';
-import { Add, Subtract, Multiply, Clear } from '../calculator/calculator';
+import { handleOperation } from '../calculator/handleOperation';
 import { buttons } from '../model/buttons';
 
 const calculatorContainer = document.createElement('div');
@@ -52,42 +52,13 @@ const handleOperationButtonClick = (operation) => {
     calculator.setCurrentValue(parseFloat(currentValue));
   }
 
-  switch (operation) {
-    case 'add':
-      calculator.setOperation(new Add());
-      calculator.setPreviousValue(calculator.currentValue);
-      currentValue = '';
-      break;
-    case 'subtract':
-      calculator.setOperation(new Subtract());
-      calculator.setPreviousValue(calculator.currentValue);
-      currentValue = '';
-      break;
-    case 'multiply':
-      calculator.setOperation(new Multiply());
-      calculator.setPreviousValue(calculator.currentValue);
-      currentValue = '';
-      break;
-    case 'equal':
-      if (!calculator.operation) {
-        console.error('No operation set!');
-        return;
-      }
-      console.log(calculator.operation);
-      calculator.executeOperation(calculator.operation);
-      calculator.setOperation(null);
-      calculatorDisplay.textContent = calculator.previousValue;
-      currentValue = '';
-      break;
-    case 'clear':
-      calculator.executeOperation(new Clear());
-      calculatorDisplay.textContent = '';
-      currentValue = '';
-      break;
-    default:
-      console.error('Unknown operation:', operation);
+  handleOperation(operation, calculator);
+
+  if (['equal', 'clear'].includes(operation)) {
+    calculatorDisplay.textContent = calculator.previousValue;
   }
 
+  currentValue = '';
   isAlreadyFloating = false;
 };
 
