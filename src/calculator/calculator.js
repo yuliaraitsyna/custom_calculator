@@ -333,8 +333,7 @@ class MemorySubtract {
 
 class MemoryRecall {
   execute(calculator) {
-    calculator.previousValue =
-      calculator.history[calculator.history.length - 1];
+    return calculator.history[calculator.history.length - 1];
   }
 }
 

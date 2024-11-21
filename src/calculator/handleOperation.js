@@ -22,7 +22,7 @@ import {
 } from '../calculator/calculator';
 
 export const handleOperation = (operation, calculator) => {
-  if (operation !== 'equal' && operation !== 'clear') {
+  if (!['equal', 'clear'].includes(operation)) {
     calculator.setPreviousValue(calculator.currentValue);
   }
 

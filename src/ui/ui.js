@@ -59,12 +59,11 @@ const handleOperationButtonClick = (operation) => {
 
   handleOperation(operation, calculator);
 
-  if (['memoryAdd'].includes(operation)) {
+  if (['memoryAdd', 'clear'].includes(operation)) {
     calculatorDisplay.textContent = 0;
   } else if (
     [
       'equal',
-      'clear',
       'percent',
       'negate',
       'square',
@@ -78,6 +77,8 @@ const handleOperationButtonClick = (operation) => {
     ].includes(operation)
   ) {
     calculatorDisplay.textContent = calculator.previousValue;
+    calculator.setCurrentValue(calculator.previousValue);
+    calculator.setPreviousValue(0);
   }
 
   currentValue = 0;
