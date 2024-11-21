@@ -27,28 +27,40 @@ let isAlreadyFloating = false;
 
 calculatorDisplay.textContent = currentValue;
 
-const updateDisplay = (value) => {
+const updateDisplay = (value, icon) => {
   if (!currentValue) {
     currentValue = '';
   }
-  currentValue += value;
+
+  if (['e', 'π'].includes(icon)) {
+    currentValue = value;
+  } else {
+    currentValue += value;
+  }
   calculatorDisplay.textContent = currentValue;
 };
 
-const handleButtonClick = ({ operation, value }) => {
+const handleButtonClick = ({ operation, value, icon }) => {
   if (operation) {
     handleOperationButtonClick(operation);
-  } else if (value) {
+  } else if (value || icon) {
+    if (['e', 'π'].includes(icon)) {
+      isAlreadyFloating = true;
+      currentValue = value;
+    }
+
     if (value === '.' && isAlreadyFloating) {
       return;
     }
+
     if (value === '.') {
       if (!currentValue) {
         return;
       }
       isAlreadyFloating = true;
     }
-    updateDisplay(value);
+
+    updateDisplay(value, icon);
   }
 };
 
@@ -97,7 +109,7 @@ export const buttonsCollection = buttons.map((button) => {
   }
 
   buttonElement.addEventListener('click', () =>
-    handleButtonClick({ operation, value }),
+    handleButtonClick({ operation, value, icon }),
   );
 
   if (icon === '0') {
