@@ -5,18 +5,14 @@ const ROUNDING = 1e12;
 
 class Calculator {
   constructor() {
-    this.currentValue = 0;
     this.previousValue = 0;
+    this.currentValue = 0;
     this.history = [];
     this.operation = null;
   }
 
   executeOperation(operation) {
-    this.previousValue = operation.execute(
-      this.previousValue,
-      this.currentValue,
-    );
-
+    this.previousValue = operation.execute(this);
     this.currentValue = 0;
   }
 
@@ -45,10 +41,22 @@ class Calculator {
   setOperation(operation) {
     this.operation = operation;
   }
+
+  clearCalculator() {
+    this.currentValue = 0;
+    this.previousValue = 0;
+    this.operation = null;
+  }
 }
 
-class Add {
-  execute(previousValue, currentValue) {
+class Operation {
+  execute() {
+    throw new Error("Method 'execute()' must be implemented.");
+  }
+}
+
+class Add extends Operation {
+  execute({ previousValue, currentValue }) {
     try {
       let result =
         (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
@@ -64,8 +72,8 @@ class Add {
   }
 }
 
-class Subtract {
-  execute(previousValue, currentValue) {
+class Subtract extends Operation {
+  execute({ previousValue, currentValue }) {
     try {
       let result =
         (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
@@ -82,8 +90,8 @@ class Subtract {
   }
 }
 
-class Multiply {
-  execute(previousValue, currentValue) {
+class Multiply extends Operation {
+  execute({ previousValue, currentValue }) {
     try {
       let result = previousValue * currentValue;
 
@@ -99,8 +107,8 @@ class Multiply {
   }
 }
 
-class Divide {
-  execute(previousValue, currentValue) {
+class Divide extends Operation {
+  execute({ previousValue, currentValue }) {
     try {
       if (this.divisionValue === 0) {
         throw new Error('Error: division by 0');
@@ -120,8 +128,8 @@ class Divide {
   }
 }
 
-class Square {
-  execute(base) {
+class Square extends Operation {
+  execute({ base }) {
     let result = base ** 2;
 
     if (!isValid(result)) {
@@ -132,8 +140,8 @@ class Square {
   }
 }
 
-class Cube {
-  execute(base) {
+class Cube extends Operation {
+  execute({ base }) {
     let result = base ** 3;
 
     if (!isValid(result)) {
@@ -144,8 +152,8 @@ class Cube {
   }
 }
 
-class Power {
-  execute(previousValue, currentValue) {
+class Power extends Operation {
+  execute({ previousValue, currentValue }) {
     try {
       let result = previousValue ** currentValue;
 
@@ -161,10 +169,10 @@ class Power {
   }
 }
 
-class TenPower {
-  execute(currentValue) {
+class TenPower extends Operation {
+  execute({ value }) {
     try {
-      let result = 10 ** currentValue;
+      let result = 10 ** value;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -178,32 +186,32 @@ class TenPower {
   }
 }
 
-class SquareRoot {
-  execute(currentValue) {
-    if (currentValue < 0) {
+class SquareRoot extends Operation {
+  execute({ value }) {
+    if (value < 0) {
       throw new Error('Error: square root of a negative number');
     }
 
-    if (!isValid(currentValue)) {
+    if (!isValid(value)) {
       throw new Error('Error: value is out of bounds');
     }
 
-    return currentValue ** 0.5;
+    return value ** 0.5;
   }
 }
 
-class CubeRoot {
-  execute(currentValue) {
-    if (!isValid(currentValue)) {
+class CubeRoot extends Operation {
+  execute({ value }) {
+    if (!isValid(value)) {
       throw new Error('Error: value is out of bounds');
     }
 
-    return currentValue ** (1 / 3);
+    return value ** (1 / 3);
   }
 }
 
-class NthRoot {
-  execute(base, root) {
+class NthRoot extends Operation {
+  execute({ base, root }) {
     if (root === 0) {
       throw new Error("Error: can't take 0th root");
     } else if (base < 0 && root % 2 === 0) {
@@ -214,10 +222,10 @@ class NthRoot {
   }
 }
 
-class Percent {
-  execute(currentValue) {
+class Percent extends Operation {
+  execute({ value }) {
     try {
-      let result = currentValue / 100;
+      let result = value / 100;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -231,19 +239,19 @@ class Percent {
   }
 }
 
-class Negate {
-  execute(currentValue) {
-    return -currentValue;
+class Negate extends Operation {
+  execute({ value }) {
+    return -value;
   }
 }
 
-class DivideByN {
-  execute(currentValue) {
+class DivideByN extends Operation {
+  execute({ value }) {
     try {
-      if (currentValue === 0) {
+      if (value === 0) {
         throw new Error("Error: can't divide by 0");
       }
-      return 1 / currentValue;
+      return 1 / value;
     } catch (error) {
       console.error(error);
       return null;
@@ -251,26 +259,26 @@ class DivideByN {
   }
 }
 
-class Factorial {
-  execute(currentValue) {
+class Factorial extends Operation {
+  execute({ value }) {
     try {
-      if (!isValid(currentValue)) {
+      if (!isValid(value)) {
         throw new Error('Error: value is out of bounds');
       }
 
-      if (currentValue - parseInt(currentValue) !== 0) {
+      if (value - parseInt(value) !== 0) {
         throw new Error('Error: value is not an integer');
       }
 
-      if (currentValue < 0) {
+      if (value < 0) {
         throw new Error('Error: factorial of a negative number is undefined');
       }
 
-      if (currentValue === 0 || currentValue === 1) {
+      if (value === 0 || value === 1) {
         return 1;
       }
 
-      return currentValue * this.execute(currentValue - 1);
+      return value * this.execute(value - 1);
     } catch (error) {
       console.error(error);
       return null;
@@ -278,14 +286,49 @@ class Factorial {
   }
 }
 
-class Clear {
+class Clear extends Operation {
+  execute(calculator) {
+    calculator.clearCalculator();
+    return 0;
+  }
+}
+
+class MemoryOperation {
+  constructor() {
+    if (new.target === MemoryOperation) {
+      throw new TypeError(
+        'Cannot construct MemoryOperation instances directly',
+      );
+    }
+  }
+
   execute() {
-    this.currentValue = 0;
-    this.previousValue = 0;
-    this.history = [];
-    this.operation = null;
-    this.isFloat = false;
-    return null;
+    throw new Error("Method 'execute()' must be implemented.");
+  }
+}
+
+class MemoryClear extends MemoryOperation {
+  execute(calculator) {
+    calculator.history.length = 0;
+  }
+}
+
+class MemoryAdd extends MemoryOperation {
+  execute(calculator) {
+    calculator.history.push(calculator.previousValue);
+  }
+}
+
+class MemorySubtract {
+  execute(calculator) {
+    calculator.history.length--;
+  }
+}
+
+class MemoryRecall {
+  execute(calculator) {
+    calculator.previousValue =
+      calculator.history[calculator.history.length - 1];
   }
 }
 
@@ -306,5 +349,9 @@ export {
   TenPower,
   DivideByN,
   Factorial,
+  MemoryClear,
+  MemoryAdd,
+  MemorySubtract,
+  MemoryRecall,
   Clear,
 };

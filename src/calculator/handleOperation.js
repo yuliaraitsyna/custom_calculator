@@ -14,6 +14,10 @@ import {
   NthRoot,
   DivideByN,
   Factorial,
+  MemoryAdd,
+  MemorySubtract,
+  MemoryClear,
+  MemoryRecall,
   Clear,
 } from '../calculator/calculator';
 
@@ -68,6 +72,18 @@ export const handleOperation = (operation, calculator) => {
     case 'factorial':
       calculator.executeOperation(new Factorial());
       break;
+    case 'memoryClear':
+      calculator.executeOperation(new MemoryClear());
+      break;
+    case 'memoryAdd':
+      calculator.executeOperation(new MemoryAdd());
+      break;
+    case 'memorySubtract':
+      calculator.executeOperation(new MemorySubtract());
+      break;
+    case 'memoryRecall':
+      calculator.executeOperation(new MemoryRecall());
+      break;
     case 'equal':
       if (!calculator.operation) {
         console.error('No operation set!');
@@ -76,9 +92,10 @@ export const handleOperation = (operation, calculator) => {
       calculator.executeOperation(calculator.operation);
       calculator.setOperation(null);
       break;
-    case 'clear':
+    case 'clear': {
       calculator.executeOperation(new Clear());
       break;
+    }
     default:
       console.error('Unknown operation:', operation);
   }

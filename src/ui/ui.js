@@ -20,12 +20,17 @@ complexOperationsContainer.className = 'complex-operations-container';
 calculatorContainer.appendChild(complexOperationsContainer);
 calculatorContainer.appendChild(basicCalculatorContainer);
 
-let currentValue = '';
-let isAlreadyFloating = false;
-
 const calculator = new Calculator();
 
+let currentValue = 0;
+let isAlreadyFloating = false;
+
+calculatorDisplay.textContent = currentValue;
+
 const updateDisplay = (value) => {
+  if (!currentValue) {
+    currentValue = '';
+  }
   currentValue += value;
   calculatorDisplay.textContent = currentValue;
 };
@@ -54,10 +59,12 @@ const handleOperationButtonClick = (operation) => {
 
   handleOperation(operation, calculator);
 
-  if (['equal', 'clear'].includes(operation)) {
-    calculatorDisplay.textContent = calculator.previousValue;
+  if (['memoryAdd'].includes(operation)) {
+    calculatorDisplay.textContent = 0;
   } else if (
     [
+      'equal',
+      'clear',
       'percent',
       'negate',
       'square',
@@ -67,12 +74,13 @@ const handleOperationButtonClick = (operation) => {
       'tenPower',
       'reciprocal',
       'factorial',
+      'memoryRecall',
     ].includes(operation)
   ) {
     calculatorDisplay.textContent = calculator.previousValue;
   }
 
-  currentValue = '';
+  currentValue = 0;
   isAlreadyFloating = false;
 };
 
