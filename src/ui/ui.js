@@ -85,6 +85,7 @@ const handleOperationButtonClick = (operation) => {
       'tenPower',
       'reciprocal',
       'factorial',
+      'random',
       'memoryRecall',
     ].includes(operation)
   ) {

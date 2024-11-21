@@ -292,6 +292,12 @@ class Factorial extends Operation {
   }
 }
 
+class Random extends Operation {
+  execute() {
+    return (+new Date().getTime() % ROUNDING) / ROUNDING;
+  }
+}
+
 class Clear extends Operation {
   execute(calculator) {
     calculator.clearCalculator();
@@ -354,6 +360,7 @@ export {
   TenPower,
   DivideByN,
   Factorial,
+  Random,
   MemoryClear,
   MemoryAdd,
   MemorySubtract,

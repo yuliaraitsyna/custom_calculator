@@ -14,6 +14,7 @@ import {
   NthRoot,
   DivideByN,
   Factorial,
+  Random,
   MemoryAdd,
   MemorySubtract,
   MemoryClear,
@@ -71,6 +72,9 @@ export const handleOperation = (operation, calculator) => {
       break;
     case 'factorial':
       calculator.executeOperation(new Factorial());
+      break;
+    case 'random':
+      calculator.executeOperation(new Random());
       break;
     case 'memoryClear':
       calculator.executeOperation(new MemoryClear());
