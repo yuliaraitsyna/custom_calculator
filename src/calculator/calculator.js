@@ -129,8 +129,8 @@ class Divide extends Operation {
 }
 
 class Square extends Operation {
-  execute({ base }) {
-    let result = base ** 2;
+  execute({ previousValue }) {
+    let result = previousValue ** 2;
 
     if (!isValid(result)) {
       throw new Error('Error: value is out of bounds');
@@ -141,8 +141,8 @@ class Square extends Operation {
 }
 
 class Cube extends Operation {
-  execute({ base }) {
-    let result = base ** 3;
+  execute({ previousValue }) {
+    let result = previousValue ** 3;
 
     if (!isValid(result)) {
       throw new Error('Error: value is out of bounds');
@@ -170,9 +170,9 @@ class Power extends Operation {
 }
 
 class TenPower extends Operation {
-  execute({ value }) {
+  execute({ previousValue }) {
     try {
-      let result = 10 ** value;
+      let result = 10 ** previousValue;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -187,45 +187,45 @@ class TenPower extends Operation {
 }
 
 class SquareRoot extends Operation {
-  execute({ value }) {
-    if (value < 0) {
+  execute({ previousValue }) {
+    if (previousValue < 0) {
       throw new Error('Error: square root of a negative number');
     }
 
-    if (!isValid(value)) {
+    if (!isValid(previousValue)) {
       throw new Error('Error: value is out of bounds');
     }
 
-    return value ** 0.5;
+    return previousValue ** 0.5;
   }
 }
 
 class CubeRoot extends Operation {
-  execute({ value }) {
-    if (!isValid(value)) {
+  execute({ previousValue }) {
+    if (!isValid(previousValue)) {
       throw new Error('Error: value is out of bounds');
     }
 
-    return value ** (1 / 3);
+    return previousValue ** (1 / 3);
   }
 }
 
 class NthRoot extends Operation {
-  execute({ base, root }) {
-    if (root === 0) {
+  execute({ previousValue, currentValue }) {
+    if (currentValue === 0) {
       throw new Error("Error: can't take 0th root");
-    } else if (base < 0 && root % 2 === 0) {
+    } else if (previousValue < 0 && currentValue % 2 === 0) {
       throw new Error('Error: impossible to take even root of negative number');
     }
 
-    return base ** (1 / root);
+    return previousValue ** (1 / currentValue);
   }
 }
 
 class Percent extends Operation {
-  execute({ value }) {
+  execute({ previousValue }) {
     try {
-      let result = value / 100;
+      let result = previousValue / 100;
 
       if (!isValid(result)) {
         throw new Error('Error: value is out of bounds');
@@ -240,18 +240,18 @@ class Percent extends Operation {
 }
 
 class Negate extends Operation {
-  execute({ value }) {
-    return -value;
+  execute({ previousValue }) {
+    return -previousValue;
   }
 }
 
 class DivideByN extends Operation {
-  execute({ value }) {
+  execute({ previousValue }) {
     try {
-      if (value === 0) {
+      if (previousValue === 0) {
         throw new Error("Error: can't divide by 0");
       }
-      return 1 / value;
+      return 1 / previousValue;
     } catch (error) {
       console.error(error);
       return null;
@@ -260,25 +260,31 @@ class DivideByN extends Operation {
 }
 
 class Factorial extends Operation {
-  execute({ value }) {
-    try {
-      if (!isValid(value)) {
-        throw new Error('Error: value is out of bounds');
-      }
+  #factorial = (n) => {
+    if (n === 0 || n === 1) {
+      return 1;
+    }
 
-      if (value - parseInt(value) !== 0) {
+    return n * this.#factorial(n - 1);
+  };
+
+  execute({ previousValue }) {
+    try {
+      if (previousValue - parseInt(previousValue) !== 0) {
         throw new Error('Error: value is not an integer');
       }
 
-      if (value < 0) {
+      if (previousValue < 0) {
         throw new Error('Error: factorial of a negative number is undefined');
       }
 
-      if (value === 0 || value === 1) {
-        return 1;
+      let result = this.#factorial(previousValue);
+
+      if (!isValid(result)) {
+        throw new Error('Error: value is out of bounds');
       }
 
-      return value * this.execute(value - 1);
+      return result;
     } catch (error) {
       console.error(error);
       return null;
