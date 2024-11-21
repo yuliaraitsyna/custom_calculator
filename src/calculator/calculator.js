@@ -57,74 +57,55 @@ class Operation {
 
 class Add extends Operation {
   execute({ previousValue, currentValue }) {
-    try {
-      let result =
-        (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
+    let result =
+      (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
 class Subtract extends Operation {
   execute({ previousValue, currentValue }) {
-    try {
-      let result =
-        (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
+    let result =
+      (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
 class Multiply extends Operation {
   execute({ previousValue, currentValue }) {
-    try {
-      let result = previousValue * currentValue;
+    let result = previousValue * currentValue;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
 class Divide extends Operation {
   execute({ previousValue, currentValue }) {
-    try {
-      if (this.divisionValue === 0) {
-        throw new Error('Error: division by 0');
-      }
-
-      let result = previousValue / currentValue;
-
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (currentValue === 0) {
+      throw new Error('Division by 0');
     }
+
+    let result = previousValue / currentValue;
+
+    if (!isValid(result)) {
+      throw new Error('Value is out of bounds');
+    }
+
+    return result;
   }
 }
 
@@ -154,35 +135,25 @@ class Cube extends Operation {
 
 class Power extends Operation {
   execute({ previousValue, currentValue }) {
-    try {
-      let result = previousValue ** currentValue;
+    let result = previousValue ** currentValue;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
 class TenPower extends Operation {
   execute({ previousValue }) {
-    try {
-      let result = 10 ** previousValue;
+    let result = 10 ** previousValue;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
@@ -224,18 +195,13 @@ class NthRoot extends Operation {
 
 class Percent extends Operation {
   execute({ previousValue }) {
-    try {
-      let result = previousValue / 100;
+    let result = previousValue / 100;
 
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
     }
+
+    return result;
   }
 }
 
@@ -247,15 +213,10 @@ class Negate extends Operation {
 
 class DivideByN extends Operation {
   execute({ previousValue }) {
-    try {
-      if (previousValue === 0) {
-        throw new Error("Error: can't divide by 0");
-      }
-      return 1 / previousValue;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (previousValue === 0) {
+      throw new Error("Error: can't divide by 0");
     }
+    return 1 / previousValue;
   }
 }
 
@@ -269,26 +230,21 @@ class Factorial extends Operation {
   };
 
   execute({ previousValue }) {
-    try {
-      if (previousValue - parseInt(previousValue) !== 0) {
-        throw new Error('Error: value is not an integer');
-      }
-
-      if (previousValue < 0) {
-        throw new Error('Error: factorial of a negative number is undefined');
-      }
-
-      let result = this.#factorial(previousValue);
-
-      if (!isValid(result)) {
-        throw new Error('Error: value is out of bounds');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      return null;
+    if (previousValue - parseInt(previousValue) !== 0) {
+      throw new Error('Error: value is not an integer');
     }
+
+    if (previousValue < 0) {
+      throw new Error('Error: factorial of a negative number is undefined');
+    }
+
+    let result = this.#factorial(previousValue);
+
+    if (!isValid(result)) {
+      throw new Error('Error: value is out of bounds');
+    }
+
+    return result;
   }
 }
 

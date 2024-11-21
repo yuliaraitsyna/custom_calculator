@@ -69,7 +69,14 @@ const handleOperationButtonClick = (operation) => {
     calculator.setCurrentValue(parseFloat(currentValue));
   }
 
-  handleOperation(operation, calculator);
+  if (!handleOperation(operation, calculator, calculatorDisplay)) {
+    calculatorDisplay.textContent = 'Error';
+    currentValue = 0;
+    isAlreadyFloating = false;
+
+    calculator.clearCalculator();
+    return;
+  }
 
   if (['memoryAdd', 'clear'].includes(operation)) {
     calculatorDisplay.textContent = 0;
