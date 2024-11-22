@@ -699,4 +699,27 @@ describe('Memory tests', () => {
     calculator.executeOperation(new MemoryRecall());
     expect(calculator.previousValue).toBe(5);
   });
+
+  it('should throw exception when memory is empty', () => {
+    calculator.history = [];
+    expect(() =>
+      calculator
+        .executeOperation(new MemorySubtract())
+        .toThrowError('Error: memory is empty'),
+    );
+    expect(() =>
+      calculator
+        .executeOperation(new MemoryRecall())
+        .toThrowError('Error: memory is empty'),
+    );
+  });
+
+  it('should throw exception when memory is overflown', () => {
+    calculator.history = new Array(Number.MAX_SAFE_INTEGER - 1, 0);
+    expect(() =>
+      calculator
+        .executeOperation(new MemoryAdd())
+        .toThrowError('Error: memory is overflown'),
+    );
+  });
 });
