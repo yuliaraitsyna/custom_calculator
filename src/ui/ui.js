@@ -66,7 +66,7 @@ const handleButtonClick = ({ operation, value, icon }) => {
 
 const handleOperationButtonClick = (operation) => {
   if (currentValue) {
-    calculator.setCurrentValue(parseFloat(currentValue));
+    calculator.currentValue = parseFloat(currentValue);
   }
 
   if (!handleOperation(operation, calculator, calculatorDisplay)) {
@@ -97,8 +97,8 @@ const handleOperationButtonClick = (operation) => {
     ].includes(operation)
   ) {
     calculatorDisplay.textContent = calculator.previousValue;
-    calculator.setCurrentValue(calculator.previousValue);
-    calculator.setPreviousValue(0);
+    calculator.currentValue = calculator.previousValue;
+    calculator.previousValue = 0;
   }
 
   currentValue = 0;

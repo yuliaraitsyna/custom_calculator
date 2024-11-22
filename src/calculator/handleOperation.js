@@ -25,21 +25,21 @@ import {
 export const handleOperation = (operation, calculator) => {
   try {
     if (!['equal', 'clear'].includes(operation)) {
-      calculator.setPreviousValue(calculator.currentValue);
+      calculator.previousValue = calculator.currentValue;
     }
 
     switch (operation) {
       case 'add':
-        calculator.setOperation(new Add());
+        calculator.operation = new Add();
         break;
       case 'subtract':
-        calculator.setOperation(new Subtract());
+        calculator.operation = new Subtract();
         break;
       case 'multiply':
-        calculator.setOperation(new Multiply());
+        calculator.operation = new Multiply();
         break;
       case 'divide':
-        calculator.setOperation(new Divide());
+        calculator.operation = new Divide();
         break;
       case 'percent':
         calculator.executeOperation(new Percent());
@@ -60,13 +60,13 @@ export const handleOperation = (operation, calculator) => {
         calculator.executeOperation(new CubeRoot());
         break;
       case 'power':
-        calculator.setOperation(new Power());
+        calculator.operation = new Power();
         break;
       case 'tenPower':
         calculator.executeOperation(new TenPower());
         break;
       case 'nthRoot':
-        calculator.setOperation(new NthRoot());
+        calculator.operation = new NthRoot();
         break;
       case 'reciprocal':
         calculator.executeOperation(new DivideByN());
@@ -95,7 +95,7 @@ export const handleOperation = (operation, calculator) => {
           return;
         }
         calculator.executeOperation(calculator.operation);
-        calculator.setOperation(null);
+        calculator.operation = null;
         break;
       case 'clear': {
         calculator.executeOperation(new Clear());

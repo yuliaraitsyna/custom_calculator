@@ -4,48 +4,73 @@ const isValid = (result) =>
 const ROUNDING = 1e12;
 
 class Calculator {
+  #previousValue;
+  #currentValue;
+  #history;
+  #operation;
+
   constructor() {
-    this.previousValue = 0;
-    this.currentValue = 0;
-    this.history = [];
-    this.operation = null;
+    this.#previousValue = 0;
+    this.#currentValue = 0;
+    this.#history = [];
+    this.#operation = null;
   }
 
   executeOperation(operation) {
-    this.previousValue = operation.execute(this);
-    this.currentValue = 0;
+    this.#previousValue = operation.execute(this);
+    this.#currentValue = 0;
   }
 
-  setCurrentValue(value) {
+  set currentValue(value) {
     try {
       if (!isValid(value)) {
         throw new Error('Error: value is out of bounds');
       }
-      this.currentValue = value;
+      this.#currentValue = value;
     } catch (error) {
       console.error(error);
     }
   }
 
-  setPreviousValue(value) {
+  set previousValue(value) {
     try {
       if (!isValid(value)) {
         throw new Error('Error: value is out of bounds');
       }
-      this.previousValue = value;
+      this.#previousValue = value;
     } catch (error) {
       console.error(error);
     }
   }
 
-  setOperation(operation) {
-    this.operation = operation;
+  set operation(operation) {
+    this.#operation = operation;
+  }
+
+  set history(history) {
+    this.#history = history;
+  }
+
+  get previousValue() {
+    return this.#previousValue;
+  }
+
+  get currentValue() {
+    return this.#currentValue;
+  }
+
+  get history() {
+    return this.#history;
+  }
+
+  get operation() {
+    return this.#operation;
   }
 
   clearCalculator() {
-    this.currentValue = 0;
-    this.previousValue = 0;
-    this.operation = null;
+    this.#currentValue = 0;
+    this.#previousValue = 0;
+    this.#operation = null;
   }
 }
 
