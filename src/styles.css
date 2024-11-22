@@ -22,7 +22,8 @@ html {
     background-color: var(--html-bg-color);
 }
 
-#theme-btn {
+#theme-btn,
+#undo-btn {
     background-color: var(--highlight-color);
     color: var(--btn-text-color);
     border: none;

@@ -6,6 +6,7 @@ const ROUNDING = 1e12;
 class Calculator {
   #previousValue;
   #currentValue;
+  #undoStack;
   #history;
   #operation;
 
@@ -13,12 +14,34 @@ class Calculator {
     this.#previousValue = 0;
     this.#currentValue = 0;
     this.#history = [];
+    this.#undoStack = [];
     this.#operation = null;
   }
 
+  saveState() {
+    this.#undoStack.push({
+      previousValue: this.#previousValue,
+      currentValue: this.#currentValue,
+      operation: this.#operation,
+    });
+  }
+
   executeOperation(operation) {
+    this.saveState();
     this.#previousValue = operation.execute(this);
     this.#currentValue = 0;
+  }
+
+  undoOperation() {
+    if (this.#undoStack.length === 0) {
+      return;
+    }
+
+    const { previousValue, currentValue, operation } = this.#undoStack.pop();
+
+    this.#previousValue = previousValue;
+    this.#currentValue = currentValue;
+    this.#operation = operation;
   }
 
   set currentValue(value) {
@@ -71,6 +94,7 @@ class Calculator {
     this.#currentValue = 0;
     this.#previousValue = 0;
     this.#operation = null;
+    this.#undoStack = [];
   }
 }
 

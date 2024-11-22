@@ -8,7 +8,13 @@ calculatorContainer.className = 'calculator-container';
 const calculatorDisplay = document.createElement('div');
 calculatorDisplay.className = 'calculator-display';
 
+const undoButton = document.createElement('button');
+undoButton.textContent = 'Undo';
+undoButton.id = 'undo-btn';
+
+document.body.appendChild(undoButton);
 document.body.appendChild(calculatorContainer);
+
 calculatorContainer.appendChild(calculatorDisplay);
 
 const basicCalculatorContainer = document.createElement('div');
@@ -26,6 +32,12 @@ let currentValue = 0;
 let isAlreadyFloating = false;
 
 calculatorDisplay.textContent = currentValue;
+
+undoButton.addEventListener('click', () => {
+  calculator.undoOperation();
+  calculatorDisplay.textContent = calculator.previousValue;
+  currentValue = calculator.previousValue;
+});
 
 const updateDisplay = (value, icon) => {
   if (!currentValue) {
