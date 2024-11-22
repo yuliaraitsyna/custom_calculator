@@ -17,6 +17,7 @@ import {
   DivideByN,
   Factorial,
   Random,
+  Clear,
 } from '../calculator';
 
 describe('Calculator tests', () => {
@@ -648,5 +649,19 @@ describe('Negate tests', () => {
     calculator.setPreviousValue(-5);
     calculator.executeOperation(new Negate());
     expect(calculator.previousValue).toBe(5);
+  });
+});
+
+describe('Clear tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it clears the calculator', () => {
+    calculator.setPreviousValue(5);
+    calculator.executeOperation(new Clear());
+    expect(calculator.previousValue).toBe(0);
   });
 });
