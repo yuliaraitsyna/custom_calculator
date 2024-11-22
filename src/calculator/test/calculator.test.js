@@ -18,6 +18,10 @@ import {
   Factorial,
   Random,
   Clear,
+  MemoryAdd,
+  MemoryClear,
+  MemoryRecall,
+  MemorySubtract,
 } from '../calculator';
 
 describe('Calculator tests', () => {
@@ -663,5 +667,36 @@ describe('Clear tests', () => {
     calculator.setPreviousValue(5);
     calculator.executeOperation(new Clear());
     expect(calculator.previousValue).toBe(0);
+  });
+});
+
+describe('Memory tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it clears the memory', () => {
+    calculator.executeOperation(new MemoryClear());
+    expect(calculator.history.length).toBe(0);
+  });
+
+  test('if it adds a number to the memory', () => {
+    calculator.setPreviousValue(5);
+    calculator.executeOperation(new MemoryAdd());
+    expect(calculator.history[0]).toBe(5);
+  });
+
+  test('if it subtracts a number from the memory', () => {
+    calculator.history = [5];
+    calculator.executeOperation(new MemorySubtract());
+    expect(calculator.history.indexOf(calculator.previousValue)).toBe(-1);
+  });
+
+  test('if it recalls a number from the memory', () => {
+    calculator.history = [5];
+    calculator.executeOperation(new MemoryRecall());
+    expect(calculator.previousValue).toBe(5);
   });
 });
