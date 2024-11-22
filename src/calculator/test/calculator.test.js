@@ -1,5 +1,23 @@
 import { describe, test, expect, beforeEach, it } from '@jest/globals';
-import { Calculator, Add, Subtract, Multiply, Divide } from '../calculator';
+import {
+  Calculator,
+  Add,
+  Subtract,
+  Multiply,
+  Divide,
+  Square,
+  Cube,
+  SquareRoot,
+  CubeRoot,
+  NthRoot,
+  Percent,
+  Negate,
+  Power,
+  TenPower,
+  DivideByN,
+  Factorial,
+  Random,
+} from '../calculator';
 
 describe('Calculator tests', () => {
   let calculator;
@@ -255,5 +273,380 @@ describe('Division tests', () => {
         .executeOperation(calculator.operation)
         .toThrowError('Error: value is out of bounds'),
     );
+  });
+});
+
+describe('Percent tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates percentage from a positive number', () => {
+    calculator.setPreviousValue(10);
+    calculator.executeOperation(new Percent());
+    expect(calculator.previousValue).toBe(0.1);
+  });
+
+  test('if it calculates percentage from a negative number', () => {
+    calculator.setPreviousValue(-10);
+    calculator.executeOperation(new Percent());
+    expect(calculator.previousValue).toBe(-0.1);
+  });
+});
+
+describe('Square tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the square of a positive number', () => {
+    calculator.setPreviousValue(3);
+    calculator.executeOperation(new Square());
+    expect(calculator.previousValue).toBe(9);
+  });
+
+  test('if it calculates the square of a negative number', () => {
+    calculator.setPreviousValue(-3);
+    calculator.executeOperation(new Square());
+    expect(calculator.previousValue).toBe(9);
+  });
+
+  it('should throw exception when getting large results on square', () => {
+    calculator.setPreviousValue(Number.MAX_VALUE - 1);
+    expect(() =>
+      calculator
+        .executeOperation(new Square())
+        .toThrowError('Error: value is out of bounds'),
+    );
+  });
+});
+
+describe('Cube tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the cube of a positive number', () => {
+    calculator.setPreviousValue(3);
+    calculator.executeOperation(new Cube());
+    expect(calculator.previousValue).toBe(27);
+  });
+
+  test('if it calculates the cube of a negative number', () => {
+    calculator.setPreviousValue(-3);
+    calculator.executeOperation(new Cube());
+    expect(calculator.previousValue).toBe(-27);
+  });
+
+  it('should throw exception when getting large results on cube', () => {
+    calculator.setPreviousValue(Number.MAX_VALUE - 1);
+    expect(() =>
+      calculator
+        .executeOperation(new Cube())
+        .toThrowError('Error: value is out of bounds'),
+    );
+  });
+});
+
+describe('Power tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the power of a positive number', () => {
+    calculator.setPreviousValue(2);
+    calculator.setCurrentValue(4);
+    calculator.executeOperation(new Power());
+    expect(calculator.previousValue).toBe(16);
+  });
+
+  test('if it calculates the power of a negative number', () => {
+    calculator.setPreviousValue(-3);
+    calculator.setCurrentValue(3);
+    calculator.executeOperation(new Power());
+    expect(calculator.previousValue).toBe(-27);
+  });
+
+  test('if it calculates the power of a positive number with floating power', () => {
+    calculator.setPreviousValue(9);
+    calculator.setCurrentValue(0.5);
+    calculator.executeOperation(new Power());
+    expect(calculator.previousValue).toBe(3);
+  });
+
+  it('should throw exception when taking even root of negative number', () => {
+    calculator.setPreviousValue(-4);
+    calculator.setCurrentValue(0.5);
+    expect(() =>
+      calculator
+        .executeOperation(new Power())
+        .toThrowError('Error: impossible to take even root of negative number'),
+    );
+  });
+
+  it('should throw exception when getting large results on power', () => {
+    calculator.setPreviousValue(Number.MAX_VALUE - 1);
+    calculator.setCurrentValue(4);
+    expect(() =>
+      calculator
+        .executeOperation(new Power())
+        .toThrowError('Error: value is out of bounds'),
+    );
+  });
+});
+
+describe('Ten power tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates ten in a positive power', () => {
+    calculator.setPreviousValue(3);
+    calculator.executeOperation(new TenPower());
+    expect(calculator.previousValue).toBe(1000);
+  });
+
+  test('if it calculates ten in a negative power', () => {
+    calculator.setPreviousValue(-3);
+    calculator.executeOperation(new TenPower());
+    expect(calculator.previousValue).toBe(0.001);
+  });
+
+  it('should throw exception when getting large results on cube', () => {
+    calculator.setPreviousValue(Number.MAX_VALUE - 1);
+    expect(() =>
+      calculator
+        .executeOperation(new TenPower())
+        .toThrowError('Error: value is out of bounds'),
+    );
+  });
+});
+
+describe('Square root tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the square root of a positive number', () => {
+    calculator.setPreviousValue(9);
+    calculator.executeOperation(new SquareRoot());
+    expect(calculator.previousValue).toBe(3);
+  });
+
+  test('if it calculates the square root of a floating point number', () => {
+    calculator.setPreviousValue(9.6);
+    calculator.executeOperation(new SquareRoot());
+    expect(calculator.previousValue).toBeCloseTo(3.098);
+  });
+
+  it('should throw exception when taking square root of a negative number', () => {
+    calculator.setPreviousValue(-9);
+    expect(() =>
+      calculator
+        .executeOperation(new SquareRoot())
+        .toThrowError('Error: square root of a negative number'),
+    );
+  });
+});
+
+describe('Cube root tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the cube root of a positive number', () => {
+    calculator.setPreviousValue(27);
+    calculator.executeOperation(new CubeRoot());
+    expect(calculator.previousValue).toBe(3);
+  });
+
+  test('if it calculates the cube root of a negative number', () => {
+    calculator.setPreviousValue(-27);
+    calculator.executeOperation(new CubeRoot());
+    expect(calculator.previousValue).toBe(-3);
+  });
+
+  test('if it calculates the cube root of a floating point number', () => {
+    calculator.setPreviousValue(0.001);
+    calculator.executeOperation(new CubeRoot());
+    expect(calculator.previousValue).toBeCloseTo(0.1);
+  });
+});
+
+describe('Nth root tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the nth root of a positive number', () => {
+    calculator.setPreviousValue(16);
+    calculator.setCurrentValue(4);
+    calculator.executeOperation(new NthRoot());
+    expect(calculator.previousValue).toBe(2);
+  });
+
+  test('if it calculates the nth root of a negative number', () => {
+    calculator.setPreviousValue(-8);
+    calculator.setCurrentValue(3);
+    calculator.executeOperation(new NthRoot());
+    expect(calculator.previousValue).toBe(-2);
+  });
+
+  test('if it calculates the nth root of a floating point number', () => {
+    calculator.setPreviousValue(0.001);
+    calculator.setCurrentValue(3);
+    calculator.executeOperation(new NthRoot());
+    expect(calculator.previousValue).toBeCloseTo(0.1);
+  });
+
+  it('should throw exception when taking even root of negative number', () => {
+    calculator.setPreviousValue(-8);
+    calculator.setCurrentValue(2);
+    expect(() =>
+      calculator
+        .executeOperation(new NthRoot())
+        .toThrowError('Error: impossible to take even root of negative number'),
+    );
+  });
+
+  it('should throw exception when taking 0th root', () => {
+    calculator.setPreviousValue(16);
+    calculator.setCurrentValue(0);
+    expect(() =>
+      calculator
+        .executeOperation(new NthRoot())
+        .toThrowError("Error: can't take 0th root"),
+    );
+  });
+
+  it('should throw exception when taking negative root of negative even number', () => {
+    calculator.setPreviousValue(-16);
+    calculator.setCurrentValue(-2);
+    expect(() =>
+      calculator
+        .executeOperation(new NthRoot())
+        .toThrowError(
+          'Error: impossible to take negative root of negative number',
+        ),
+    );
+  });
+});
+
+describe('Divide by N tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the reciprocal of a positive number', () => {
+    calculator.setPreviousValue(4);
+    calculator.executeOperation(new DivideByN());
+    expect(calculator.previousValue).toBe(0.25);
+  });
+
+  test('if it calculates the reciprocal of a negative number', () => {
+    calculator.setPreviousValue(-4);
+    calculator.executeOperation(new DivideByN());
+    expect(calculator.previousValue).toBe(-0.25);
+  });
+
+  it('should throw exception when dividing by 0', () => {
+    calculator.setPreviousValue(0);
+    expect(() =>
+      calculator
+        .executeOperation(new DivideByN())
+        .toThrowError('Division by 0'),
+    );
+  });
+});
+
+describe('Factorial tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it calculates the factorial of a positive number', () => {
+    calculator.setPreviousValue(5);
+    calculator.executeOperation(new Factorial());
+    expect(calculator.previousValue).toBe(120);
+  });
+
+  test('if it calculates the factorial of 0', () => {
+    calculator.setPreviousValue(0);
+    calculator.executeOperation(new Factorial());
+    expect(calculator.previousValue).toBe(1);
+  });
+
+  it('should throw exception when calculating factorial of a negative number', () => {
+    calculator.setPreviousValue(-5);
+    expect(() =>
+      calculator
+        .executeOperation(new Factorial())
+        .toThrowError("Error: can't calculate factorial of a negative number"),
+    );
+  });
+
+  it('should throw exception when calculating factorial of a floating point number', () => {
+    calculator.setPreviousValue(5.5);
+    expect(() =>
+      calculator
+        .executeOperation(new Factorial())
+        .toThrowError(
+          "Error: can't calculate factorial of a floating point number",
+        ),
+    );
+  });
+});
+
+describe('Random number tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it generates random number', () => {
+    calculator.executeOperation(new Random());
+    expect(calculator.previousValue).toBeGreaterThanOrEqual(0);
+    expect(calculator.previousValue).toBeLessThan(1);
+  });
+});
+
+describe('Negate tests', () => {
+  let calculator;
+
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+
+  test('if it negates a positive number', () => {
+    calculator.setPreviousValue(5);
+    calculator.executeOperation(new Negate());
+    expect(calculator.previousValue).toBe(-5);
+  });
+
+  test('if it negates a negative number', () => {
+    calculator.setPreviousValue(-5);
+    calculator.executeOperation(new Negate());
+    expect(calculator.previousValue).toBe(5);
   });
 });

@@ -135,6 +135,10 @@ class Cube extends Operation {
 
 class Power extends Operation {
   execute({ previousValue, currentValue }) {
+    if (currentValue < 1 && currentValue > 0 && previousValue < 0) {
+      throw new Error('Error: impossible to take even root of negative number');
+    }
+
     let result = previousValue ** currentValue;
 
     if (!isValid(result)) {
@@ -177,19 +181,35 @@ class CubeRoot extends Operation {
       throw new Error('Error: value is out of bounds');
     }
 
-    return previousValue ** (1 / 3);
+    const result =
+      previousValue < 0
+        ? -((-previousValue) ** (1 / 3))
+        : previousValue ** (1 / 3);
+
+    return result;
   }
 }
 
 class NthRoot extends Operation {
   execute({ previousValue, currentValue }) {
     if (currentValue === 0) {
-      throw new Error("Error: can't take 0th root");
-    } else if (previousValue < 0 && currentValue % 2 === 0) {
-      throw new Error('Error: impossible to take even root of negative number');
+      throw new Error("Error: Can't take the 0th root");
     }
 
-    return previousValue ** (1 / currentValue);
+    if (previousValue < 0 && currentValue % 2 === 0) {
+      throw new Error("Error: Can't take an even root of a negative number");
+    }
+
+    if (previousValue < 0 && currentValue < 0) {
+      throw new Error("Error: Can't take a negative root of a negative number");
+    }
+
+    const result =
+      previousValue < 0
+        ? -((-previousValue) ** (1 / currentValue))
+        : previousValue ** (1 / currentValue);
+
+    return result;
   }
 }
 
