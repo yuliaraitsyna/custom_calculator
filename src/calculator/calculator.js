@@ -303,18 +303,30 @@ class MemoryClear extends MemoryOperation {
 
 class MemoryAdd extends MemoryOperation {
   execute(calculator) {
+    if (calculator.history.length >= Array.MAX_SAFE_INTEGER) {
+      throw new Error('memory is overflown');
+    }
+
     calculator.history.push(calculator.previousValue);
   }
 }
 
 class MemorySubtract {
   execute(calculator) {
+    if (calculator.history.length === 0) {
+      throw new Error('memory is empty');
+    }
+
     calculator.history.length--;
   }
 }
 
 class MemoryRecall {
   execute(calculator) {
+    if (calculator.history.length === 0) {
+      throw new Error('memory is empty');
+    }
+
     return calculator.history[calculator.history.length - 1];
   }
 }
