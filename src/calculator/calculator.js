@@ -47,7 +47,7 @@ class Calculator {
   set currentValue(value) {
     try {
       if (!isValid(value)) {
-        throw new Error('Error: value is out of bounds');
+        throw new Error('value is out of bounds');
       }
       this.#currentValue = value;
     } catch (error) {
@@ -58,7 +58,7 @@ class Calculator {
   set previousValue(value) {
     try {
       if (!isValid(value)) {
-        throw new Error('Error: value is out of bounds');
+        throw new Error('value is out of bounds');
       }
       this.#previousValue = value;
     } catch (error) {
@@ -100,7 +100,7 @@ class Calculator {
 
 class Operation {
   execute() {
-    throw new Error("Method 'execute()' must be implemented.");
+    throw new Error("method 'execute()' must be implemented.");
   }
 }
 
@@ -110,7 +110,7 @@ class Add extends Operation {
       (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -123,7 +123,7 @@ class Subtract extends Operation {
       (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -135,7 +135,7 @@ class Multiply extends Operation {
     let result = previousValue * currentValue;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -145,13 +145,13 @@ class Multiply extends Operation {
 class Divide extends Operation {
   execute({ previousValue, currentValue }) {
     if (currentValue === 0) {
-      throw new Error('Division by 0');
+      throw new Error('division by 0');
     }
 
     let result = previousValue / currentValue;
 
     if (!isValid(result)) {
-      throw new Error('Value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -163,7 +163,7 @@ class Square extends Operation {
     let result = previousValue ** 2;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -175,7 +175,7 @@ class Cube extends Operation {
     let result = previousValue ** 3;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -185,13 +185,13 @@ class Cube extends Operation {
 class Power extends Operation {
   execute({ previousValue, currentValue }) {
     if (currentValue < 1 && currentValue > 0 && previousValue < 0) {
-      throw new Error('Error: impossible to take even root of negative number');
+      throw new Error('impossible to take even root of negative number');
     }
 
     let result = previousValue ** currentValue;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -203,7 +203,7 @@ class TenPower extends Operation {
     let result = 10 ** previousValue;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -213,11 +213,11 @@ class TenPower extends Operation {
 class SquareRoot extends Operation {
   execute({ previousValue }) {
     if (previousValue < 0) {
-      throw new Error('Error: square root of a negative number');
+      throw new Error('square root of a negative number');
     }
 
     if (!isValid(previousValue)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return previousValue ** 0.5;
@@ -227,7 +227,7 @@ class SquareRoot extends Operation {
 class CubeRoot extends Operation {
   execute({ previousValue }) {
     if (!isValid(previousValue)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     const result =
@@ -242,15 +242,15 @@ class CubeRoot extends Operation {
 class NthRoot extends Operation {
   execute({ previousValue, currentValue }) {
     if (currentValue === 0) {
-      throw new Error("Error: Can't take the 0th root");
+      throw new Error("can't take the 0th root");
     }
 
     if (previousValue < 0 && currentValue % 2 === 0) {
-      throw new Error("Error: Can't take an even root of a negative number");
+      throw new Error("can't take an even root of a negative number");
     }
 
     if (previousValue < 0 && currentValue < 0) {
-      throw new Error("Error: Can't take a negative root of a negative number");
+      throw new Error("can't take a negative root of a negative number");
     }
 
     const result =
@@ -267,7 +267,7 @@ class Percent extends Operation {
     let result = previousValue / 100;
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -283,7 +283,7 @@ class Negate extends Operation {
 class DivideByN extends Operation {
   execute({ previousValue }) {
     if (previousValue === 0) {
-      throw new Error("Error: can't divide by 0");
+      throw new Error("can't divide by 0");
     }
     return 1 / previousValue;
   }
@@ -300,17 +300,17 @@ class Factorial extends Operation {
 
   execute({ previousValue }) {
     if (previousValue - parseInt(previousValue) !== 0) {
-      throw new Error('Error: value is not an integer');
+      throw new Error('value is not an integer');
     }
 
     if (previousValue < 0) {
-      throw new Error('Error: factorial of a negative number is undefined');
+      throw new Error('factorial of a negative number is undefined');
     }
 
     let result = this.#factorial(previousValue);
 
     if (!isValid(result)) {
-      throw new Error('Error: value is out of bounds');
+      throw new Error('value is out of bounds');
     }
 
     return result;
@@ -334,13 +334,13 @@ class MemoryOperation {
   constructor() {
     if (new.target === MemoryOperation) {
       throw new TypeError(
-        'Cannot construct MemoryOperation instances directly',
+        'cannot construct MemoryOperation instances directly',
       );
     }
   }
 
   execute() {
-    throw new Error("Method 'execute()' must be implemented.");
+    throw new Error("method 'execute()' must be implemented.");
   }
 }
 

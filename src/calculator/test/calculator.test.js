@@ -35,25 +35,25 @@ describe('Calculator tests', () => {
     expect(
       () =>
         (calculator.calculator.currentValue = Number.MAX_VALUE.toThrowError(
-          'Error: value is out of bounds',
+          'value is out of bounds',
         )),
     );
     expect(
       () =>
         (calculator.calculator.currentValue = Number.MIN_VALUE.toThrowError(
-          'Error: value is out of bounds',
+          'value is out of bounds',
         )),
     );
   });
 
   it('should throw exception when setting large previous value', () => {
     expect(() =>
-      calculator.previousValue.toThrowError('Error: value is out of bounds'),
+      calculator.previousValue.toThrowError('value is out of bounds'),
     );
     expect(
       () =>
         (calculator.calculator.previousValue = Number.MAX_VALUE.toThrowError(
-          'Error: value is out of bounds',
+          'value is out of bounds',
         )),
     );
   });
@@ -105,7 +105,7 @@ describe('Addition tests', () => {
     expect(() =>
       calculator
         .executeOperation(calculator.operation)
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -156,7 +156,7 @@ describe('Subtraction tests', () => {
     expect(() =>
       calculator
         .executeOperation(calculator.operation)
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -215,7 +215,7 @@ describe('Multiplication tests', () => {
     expect(() =>
       calculator
         .executeOperation(calculator.operation)
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -266,7 +266,7 @@ describe('Division tests', () => {
     expect(() =>
       calculator
         .executeOperation(calculator.operation)
-        .toThrowError('Division by 0'),
+        .toThrowError('division by 0'),
     );
   });
 
@@ -277,7 +277,7 @@ describe('Division tests', () => {
     expect(() =>
       calculator
         .executeOperation(calculator.operation)
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -326,7 +326,7 @@ describe('Square tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Square())
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -355,7 +355,7 @@ describe('Cube tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Cube())
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -394,7 +394,7 @@ describe('Power tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Power())
-        .toThrowError('Error: impossible to take even root of negative number'),
+        .toThrowError('impossible to take even root of negative number'),
     );
   });
 
@@ -404,7 +404,7 @@ describe('Power tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Power())
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -433,7 +433,7 @@ describe('Ten power tests', () => {
     expect(() =>
       calculator
         .executeOperation(new TenPower())
-        .toThrowError('Error: value is out of bounds'),
+        .toThrowError('value is out of bounds'),
     );
   });
 });
@@ -462,7 +462,7 @@ describe('Square root tests', () => {
     expect(() =>
       calculator
         .executeOperation(new SquareRoot())
-        .toThrowError('Error: square root of a negative number'),
+        .toThrowError('square root of a negative number'),
     );
   });
 });
@@ -527,7 +527,7 @@ describe('Nth root tests', () => {
     expect(() =>
       calculator
         .executeOperation(new NthRoot())
-        .toThrowError('Error: impossible to take even root of negative number'),
+        .toThrowError('impossible to take even root of negative number'),
     );
   });
 
@@ -537,7 +537,7 @@ describe('Nth root tests', () => {
     expect(() =>
       calculator
         .executeOperation(new NthRoot())
-        .toThrowError("Error: can't take 0th root"),
+        .toThrowError("can't take 0th root"),
     );
   });
 
@@ -547,9 +547,7 @@ describe('Nth root tests', () => {
     expect(() =>
       calculator
         .executeOperation(new NthRoot())
-        .toThrowError(
-          'Error: impossible to take negative root of negative number',
-        ),
+        .toThrowError('impossible to take negative root of negative number'),
     );
   });
 });
@@ -607,7 +605,7 @@ describe('Factorial tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Factorial())
-        .toThrowError("Error: can't calculate factorial of a negative number"),
+        .toThrowError("can't calculate factorial of a negative number"),
     );
   });
 
@@ -616,9 +614,7 @@ describe('Factorial tests', () => {
     expect(() =>
       calculator
         .executeOperation(new Factorial())
-        .toThrowError(
-          "Error: can't calculate factorial of a floating point number",
-        ),
+        .toThrowError("can't calculate factorial of a floating point number"),
     );
   });
 });
@@ -706,12 +702,12 @@ describe('Memory tests', () => {
     expect(() =>
       calculator
         .executeOperation(new MemorySubtract())
-        .toThrowError('Error: memory is empty'),
+        .toThrowError('memory is empty'),
     );
     expect(() =>
       calculator
         .executeOperation(new MemoryRecall())
-        .toThrowError('Error: memory is empty'),
+        .toThrowError('memory is empty'),
     );
   });
 
@@ -720,7 +716,7 @@ describe('Memory tests', () => {
     expect(() =>
       calculator
         .executeOperation(new MemoryAdd())
-        .toThrowError('Error: memory is overflown'),
+        .toThrowError('memory is overflown'),
     );
   });
 });
