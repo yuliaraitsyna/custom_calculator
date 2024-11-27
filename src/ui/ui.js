@@ -1,5 +1,4 @@
 import { Calculator } from '../calculator/calculator';
-import { handleOperation } from '../calculator/handleOperation';
 import { buttons } from '../model/buttons';
 
 const calculatorContainer = document.createElement('div');
@@ -28,15 +27,38 @@ calculatorContainer.appendChild(basicCalculatorContainer);
 
 const calculator = new Calculator();
 
-let currentValue = 0;
+let currentValue = '';
 let isAlreadyFloating = false;
+let currentCommand = null;
 
 calculatorDisplay.textContent = currentValue;
 
+const resetCalculator = () => {
+  calculator.clear();
+  currentValue = '';
+  currentCommand = null;
+  isAlreadyFloating = false;
+  calculatorDisplay.textContent = currentValue;
+};
+
+const executeEqual = () => {
+  if (currentCommand && currentValue) {
+    const value = parseFloat(currentValue);
+    console.log('value: ', value);
+    const command = currentCommand(value);
+    console.log(command);
+    calculator.execute(command);
+    currentValue = calculator.currentValue.toString();
+    isAlreadyFloating = currentValue.includes('.');
+    calculatorDisplay.textContent = currentValue;
+  }
+};
+
 undoButton.addEventListener('click', () => {
-  calculator.undoOperation();
-  calculatorDisplay.textContent = calculator.previousValue;
-  currentValue = calculator.previousValue;
+  calculator.undo();
+  currentValue = calculator.currentValue.toString() || '0';
+  isAlreadyFloating = currentValue.includes('.');
+  calculatorDisplay.textContent = currentValue;
 });
 
 const updateDisplay = (value, icon) => {
@@ -52,69 +74,54 @@ const updateDisplay = (value, icon) => {
   calculatorDisplay.textContent = currentValue;
 };
 
-const handleButtonClick = ({ operation, value, icon }) => {
-  if (operation) {
-    handleOperationButtonClick(operation);
-  } else if (value || icon) {
-    if (['e', 'π'].includes(icon)) {
-      isAlreadyFloating = true;
-      currentValue = value;
-    }
+const handleOperation = (operation) => {
+  if (typeof operation === 'function') {
+    calculator.currentValue = parseFloat(currentValue);
+    currentValue = '';
+    calculatorDisplay.textContent = currentValue;
+    console.log(operation);
+    currentCommand = operation;
+    console.log('current command: ', currentCommand);
+  }
 
-    if (value === '.' && isAlreadyFloating) {
-      return;
-    }
-
-    if (value === '.') {
-      if (!currentValue) {
-        return;
-      }
-      isAlreadyFloating = true;
-    }
-
-    updateDisplay(value, icon);
+  switch (operation) {
+    case 'clear':
+      resetCalculator();
+      break;
+    case 'equal':
+      executeEqual();
+      break;
+    default:
+      break;
   }
 };
 
-const handleOperationButtonClick = (operation) => {
-  if (currentValue) {
-    calculator.currentValue = parseFloat(currentValue);
+const handleValue = (value, icon) => {
+  if (['e', 'π'].includes(icon)) {
+    isAlreadyFloating = true;
+    currentValue = value;
   }
 
-  if (!handleOperation(operation, calculator, calculatorDisplay)) {
-    calculatorDisplay.textContent = 'Error';
-    currentValue = 0;
-    isAlreadyFloating = false;
-
-    calculator.clearCalculator();
+  if (value === '.' && isAlreadyFloating) {
     return;
   }
 
-  if (['memoryAdd', 'clear'].includes(operation)) {
-    calculatorDisplay.textContent = 0;
-  } else if (
-    [
-      'equal',
-      'percent',
-      'negate',
-      'square',
-      'cube',
-      'squareRoot',
-      'cubeRoot',
-      'tenPower',
-      'reciprocal',
-      'factorial',
-      'random',
-      'memoryRecall',
-    ].includes(operation)
-  ) {
-    calculatorDisplay.textContent = calculator.previousValue;
-    calculator.currentValue = calculator.previousValue;
-    calculator.previousValue = 0;
+  if (value === '.') {
+    if (!currentValue) {
+      return;
+    }
+    isAlreadyFloating = true;
   }
 
-  currentValue = 0;
-  isAlreadyFloating = false;
+  updateDisplay(value, icon);
+};
+
+const handleButtonClick = ({ operation, value, icon }) => {
+  if (operation) {
+    handleOperation(operation);
+  } else if (value || icon) {
+    handleValue(value, icon);
+  }
 };
 
 export const buttonsCollection = buttons.map((button) => {

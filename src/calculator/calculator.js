@@ -4,161 +4,107 @@ const isValid = (result) =>
 const ROUNDING = 1e12;
 
 class Calculator {
-  #previousValue;
-  #currentValue;
-  #undoStack;
-  #history;
-  #operation;
-
   constructor() {
-    this.#previousValue = 0;
-    this.#currentValue = 0;
-    this.#history = [];
-    this.#undoStack = [];
-    this.#operation = null;
+    this.currentValue = 0;
+    this.history = [];
   }
 
-  saveState() {
-    this.#undoStack.push({
-      previousValue: this.#previousValue,
-      currentValue: this.#currentValue,
-      operation: this.#operation,
-    });
-  }
-
-  executeOperation(operation) {
-    this.saveState();
-    this.#previousValue = operation.execute(this);
-    this.#currentValue = 0;
-  }
-
-  undoOperation() {
-    if (this.#undoStack.length === 0) {
-      return;
-    }
-
-    const { previousValue, currentValue, operation } = this.#undoStack.pop();
-
-    this.#previousValue = previousValue;
-    this.#currentValue = currentValue;
-    this.#operation = operation;
-  }
-
-  set currentValue(value) {
-    try {
-      if (!isValid(value)) {
-        throw new Error('value is out of bounds');
-      }
-      this.#currentValue = value;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  set previousValue(value) {
-    try {
-      if (!isValid(value)) {
-        throw new Error('value is out of bounds');
-      }
-      this.#previousValue = value;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  set operation(operation) {
-    this.#operation = operation;
-  }
-
-  set history(history) {
-    this.#history = history;
-  }
-
-  get previousValue() {
-    return this.#previousValue;
-  }
-
-  get currentValue() {
-    return this.#currentValue;
-  }
-
-  get history() {
-    return this.#history;
-  }
-
-  get operation() {
-    return this.#operation;
-  }
-
-  clearCalculator() {
-    this.#currentValue = 0;
-    this.#previousValue = 0;
-    this.#operation = null;
-    this.#undoStack = [];
-  }
-}
-
-class Operation {
-  execute() {
-    throw new Error("method 'execute()' must be implemented.");
-  }
-}
-
-class Add extends Operation {
-  execute({ previousValue, currentValue }) {
-    let result =
-      (previousValue * ROUNDING + currentValue * ROUNDING) / ROUNDING;
-
+  execute(command) {
+    console.log(command);
+    let result = command.execute(this.currentValue);
     if (!isValid(result)) {
       throw new Error('value is out of bounds');
     }
+    this.currentValue = result;
+    this.history.push(command);
+  }
 
-    return result;
+  undo() {
+    if (this.history.length === 0) return;
+    const command = this.history.pop();
+    this.currentValue = command.undo(this.currentValue);
+  }
+
+  clear() {
+    this.currentValue = 0;
+    this.history = [];
   }
 }
 
-class Subtract extends Operation {
-  execute({ previousValue, currentValue }) {
-    let result =
-      (previousValue * ROUNDING - currentValue * ROUNDING) / ROUNDING;
-
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
+class Command {
+  constructor() {
+    if (new.target === Command) {
+      throw new Error(
+        'Command is an abstract class and cannot be instantiated directly.',
+      );
     }
-
-    return result;
   }
 }
 
-class Multiply extends Operation {
-  execute({ previousValue, currentValue }) {
-    let result = previousValue * currentValue;
+class Add extends Command {
+  constructor(amount) {
+    super();
+    this.amount = amount;
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
+  execute(currentValue) {
+    return currentValue + this.amount;
+  }
 
-    return result;
+  undo(currentValue) {
+    return currentValue - this.amount;
   }
 }
 
-class Divide extends Operation {
-  execute({ previousValue, currentValue }) {
-    if (currentValue === 0) {
-      throw new Error('division by 0');
-    }
+class Subtract extends Command {
+  constructor(amount) {
+    super();
+    this.amount = amount;
+  }
 
-    let result = previousValue / currentValue;
+  execute(currentValue) {
+    return currentValue - this.amount;
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+  undo(currentValue) {
+    return currentValue + this.amount;
   }
 }
 
-class Square extends Operation {
+class Multiply extends Command {
+  constructor(amount) {
+    super();
+    this.amount = amount;
+  }
+
+  execute(currentValue) {
+    return currentValue * this.amount;
+  }
+
+  undo(currentValue) {
+    return currentValue / this.factor;
+  }
+}
+
+class Divide extends Command {
+  constructor(amount) {
+    super();
+    this.amount = amount;
+  }
+
+  execute(currentValue) {
+    if (this.amount === 0) {
+      throw new Error('Division by zero is not allowed');
+    }
+    return currentValue / this.amount;
+  }
+
+  undo(currentValue) {
+    return currentValue * this.amount;
+  }
+}
+
+class Square extends Command {
   execute({ previousValue }) {
     let result = previousValue ** 2;
 
@@ -170,7 +116,7 @@ class Square extends Operation {
   }
 }
 
-class Cube extends Operation {
+class Cube extends Command {
   execute({ previousValue }) {
     let result = previousValue ** 3;
 
@@ -182,7 +128,7 @@ class Cube extends Operation {
   }
 }
 
-class Power extends Operation {
+class Power extends Command {
   execute({ previousValue, currentValue }) {
     if (currentValue < 1 && currentValue > 0 && previousValue < 0) {
       throw new Error('impossible to take even root of negative number');
@@ -198,7 +144,7 @@ class Power extends Operation {
   }
 }
 
-class TenPower extends Operation {
+class TenPower extends Command {
   execute({ previousValue }) {
     let result = 10 ** previousValue;
 
@@ -210,7 +156,7 @@ class TenPower extends Operation {
   }
 }
 
-class SquareRoot extends Operation {
+class SquareRoot extends Command {
   execute({ previousValue }) {
     if (previousValue < 0) {
       throw new Error('square root of a negative number');
@@ -224,7 +170,7 @@ class SquareRoot extends Operation {
   }
 }
 
-class CubeRoot extends Operation {
+class CubeRoot extends Command {
   execute({ previousValue }) {
     if (!isValid(previousValue)) {
       throw new Error('value is out of bounds');
@@ -239,7 +185,7 @@ class CubeRoot extends Operation {
   }
 }
 
-class NthRoot extends Operation {
+class NthRoot extends Command {
   execute({ previousValue, currentValue }) {
     if (currentValue === 0) {
       throw new Error("can't take the 0th root");
@@ -262,7 +208,7 @@ class NthRoot extends Operation {
   }
 }
 
-class Percent extends Operation {
+class Percent extends Command {
   execute({ previousValue }) {
     let result = previousValue / 100;
 
@@ -274,13 +220,13 @@ class Percent extends Operation {
   }
 }
 
-class Negate extends Operation {
+class Negate extends Command {
   execute({ previousValue }) {
     return -previousValue;
   }
 }
 
-class DivideByN extends Operation {
+class DivideByN extends Command {
   execute({ previousValue }) {
     if (previousValue === 0) {
       throw new Error("can't divide by 0");
@@ -289,7 +235,7 @@ class DivideByN extends Operation {
   }
 }
 
-class Factorial extends Operation {
+class Factorial extends Command {
   #factorial = (n) => {
     if (n === 0 || n === 1) {
       return 1;
@@ -317,25 +263,16 @@ class Factorial extends Operation {
   }
 }
 
-class Random extends Operation {
+class Random extends Command {
   execute() {
     return (+new Date().getTime() % ROUNDING) / ROUNDING;
   }
 }
 
-class Clear extends Operation {
-  execute(calculator) {
-    calculator.clearCalculator();
-    return 0;
-  }
-}
-
-class MemoryOperation {
+class MemoryCommand {
   constructor() {
-    if (new.target === MemoryOperation) {
-      throw new TypeError(
-        'cannot construct MemoryOperation instances directly',
-      );
+    if (new.target === MemoryCommand) {
+      throw new TypeError('cannot construct MemoryCommand instances directly');
     }
   }
 
@@ -344,13 +281,13 @@ class MemoryOperation {
   }
 }
 
-class MemoryClear extends MemoryOperation {
+class MemoryClear extends MemoryCommand {
   execute(calculator) {
     calculator.history.length = 0;
   }
 }
 
-class MemoryAdd extends MemoryOperation {
+class MemoryAdd extends MemoryCommand {
   execute(calculator) {
     if (calculator.history.length >= Array.MAX_SAFE_INTEGER) {
       throw new Error('memory is overflown');
@@ -402,5 +339,4 @@ export {
   MemoryAdd,
   MemorySubtract,
   MemoryRecall,
-  Clear,
 };
