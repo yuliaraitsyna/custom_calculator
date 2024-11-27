@@ -79,9 +79,17 @@ const handleOperation = (operation) => {
     calculator.currentValue = parseFloat(currentValue);
     currentValue = '';
     calculatorDisplay.textContent = currentValue;
-    console.log(operation);
     currentCommand = operation;
-    console.log('current command: ', currentCommand);
+    isAlreadyFloating = false;
+
+    if (!operation.length) {
+      const command = currentCommand();
+      calculator.execute(command);
+      currentValue = calculator.currentValue.toString();
+      isAlreadyFloating = currentValue.includes('.');
+      calculatorDisplay.textContent = currentValue;
+      return;
+    }
   }
 
   switch (operation) {
