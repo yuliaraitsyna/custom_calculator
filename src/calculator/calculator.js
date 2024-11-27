@@ -10,17 +10,19 @@ class Calculator {
   }
 
   execute(command) {
-    console.log(command);
     let result = command.execute(this.currentValue);
+
     if (!isValid(result)) {
       throw new Error('value is out of bounds');
     }
+
     this.currentValue = result;
     this.history.push(command);
   }
 
   undo() {
     if (this.history.length === 0) return;
+
     const command = this.history.pop();
     this.currentValue = command.undo(this.currentValue);
   }
@@ -42,200 +44,205 @@ class Command {
 }
 
 class Add extends Command {
-  constructor(amount) {
+  constructor(value) {
     super();
-    this.amount = amount;
+    this.value = value;
   }
 
   execute(currentValue) {
-    return currentValue + this.amount;
+    return currentValue + this.value;
   }
 
   undo(currentValue) {
-    return currentValue - this.amount;
+    return currentValue - this.value;
   }
 }
 
 class Subtract extends Command {
-  constructor(amount) {
+  constructor(value) {
     super();
-    this.amount = amount;
+    this.value = value;
   }
 
   execute(currentValue) {
-    return currentValue - this.amount;
+    return currentValue - this.value;
   }
 
   undo(currentValue) {
-    return currentValue + this.amount;
+    return currentValue + this.value;
   }
 }
 
 class Multiply extends Command {
-  constructor(amount) {
+  constructor(value) {
     super();
-    this.amount = amount;
+    this.value = value;
   }
 
   execute(currentValue) {
-    return currentValue * this.amount;
+    return currentValue * this.value;
   }
 
   undo(currentValue) {
-    return currentValue / this.factor;
+    return currentValue / this.value;
   }
 }
 
 class Divide extends Command {
-  constructor(amount) {
+  constructor(value) {
     super();
-    this.amount = amount;
+    this.value = value;
   }
 
   execute(currentValue) {
-    if (this.amount === 0) {
+    if (this.value === 0) {
       throw new Error('Division by zero is not allowed');
     }
-    return currentValue / this.amount;
+    return currentValue / this.value;
   }
 
   undo(currentValue) {
-    return currentValue * this.amount;
+    return currentValue * this.value;
   }
 }
 
 class Square extends Command {
-  execute({ previousValue }) {
-    let result = previousValue ** 2;
+  constructor() {
+    super();
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+  execute(currentValue) {
+    return currentValue ** 2;
   }
 }
 
 class Cube extends Command {
-  execute({ previousValue }) {
-    let result = previousValue ** 3;
+  constructor() {
+    super();
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+  execute(currentValue) {
+    return currentValue ** 3;
   }
 }
 
 class Power extends Command {
-  execute({ previousValue, currentValue }) {
-    if (currentValue < 1 && currentValue > 0 && previousValue < 0) {
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+
+  execute(currentValue) {
+    if (this.value < 1 && this.value > 0 && currentValue < 0) {
       throw new Error('impossible to take even root of negative number');
     }
 
-    let result = previousValue ** currentValue;
-
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+    return currentValue ** this.value;
   }
 }
 
 class TenPower extends Command {
-  execute({ previousValue }) {
-    let result = 10 ** previousValue;
+  constructor() {
+    super();
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+  execute(currentValue) {
+    return 10 ** currentValue;
   }
 }
 
 class SquareRoot extends Command {
-  execute({ previousValue }) {
-    if (previousValue < 0) {
+  constructor() {
+    super();
+  }
+
+  execute(currentValue) {
+    if (currentValue < 0) {
       throw new Error('square root of a negative number');
     }
 
-    if (!isValid(previousValue)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return previousValue ** 0.5;
+    return currentValue ** 0.5;
   }
 }
 
 class CubeRoot extends Command {
-  execute({ previousValue }) {
-    if (!isValid(previousValue)) {
-      throw new Error('value is out of bounds');
-    }
+  constructor() {
+    super();
+  }
 
-    const result =
-      previousValue < 0
-        ? -((-previousValue) ** (1 / 3))
-        : previousValue ** (1 / 3);
-
-    return result;
+  execute(currentValue) {
+    return currentValue < 0
+      ? -((-currentValue) ** (1 / 3))
+      : currentValue ** (1 / 3);
   }
 }
 
 class NthRoot extends Command {
-  execute({ previousValue, currentValue }) {
-    if (currentValue === 0) {
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+
+  execute(currentValue) {
+    if (this.value === 0) {
       throw new Error("can't take the 0th root");
     }
 
-    if (previousValue < 0 && currentValue % 2 === 0) {
+    if (currentValue < 0 && this.value % 2 === 0) {
       throw new Error("can't take an even root of a negative number");
     }
 
-    if (previousValue < 0 && currentValue < 0) {
+    if (currentValue < 0 && this.value < 0) {
       throw new Error("can't take a negative root of a negative number");
     }
 
     const result =
-      previousValue < 0
-        ? -((-previousValue) ** (1 / currentValue))
-        : previousValue ** (1 / currentValue);
+      currentValue < 0
+        ? -((-currentValue) ** (1 / this.value))
+        : currentValue ** (1 / this.value);
 
     return result;
   }
 }
 
 class Percent extends Command {
-  execute({ previousValue }) {
-    let result = previousValue / 100;
+  constructor() {
+    super();
+  }
 
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+  execute(currentValue) {
+    return currentValue / 100;
   }
 }
 
 class Negate extends Command {
-  execute({ previousValue }) {
-    return -previousValue;
+  constructor() {
+    super();
+  }
+
+  execute(currentValue) {
+    return -currentValue;
   }
 }
 
 class DivideByN extends Command {
-  execute({ previousValue }) {
-    if (previousValue === 0) {
+  constructor() {
+    super();
+  }
+
+  execute(currentValue) {
+    if (currentValue === 0) {
       throw new Error("can't divide by 0");
     }
-    return 1 / previousValue;
+    return 1 / currentValue;
   }
 }
 
 class Factorial extends Command {
+  constructor() {
+    super();
+  }
+
   #factorial = (n) => {
     if (n === 0 || n === 1) {
       return 1;
@@ -244,26 +251,24 @@ class Factorial extends Command {
     return n * this.#factorial(n - 1);
   };
 
-  execute({ previousValue }) {
-    if (previousValue - parseInt(previousValue) !== 0) {
+  execute(currentValue) {
+    if (currentValue - parseInt(currentValue !== 0)) {
       throw new Error('value is not an integer');
     }
 
-    if (previousValue < 0) {
+    if (currentValue < 0) {
       throw new Error('factorial of a negative number is undefined');
     }
 
-    let result = this.#factorial(previousValue);
-
-    if (!isValid(result)) {
-      throw new Error('value is out of bounds');
-    }
-
-    return result;
+    return this.#factorial(currentValue);
   }
 }
 
 class Random extends Command {
+  constructor() {
+    super();
+  }
+
   execute() {
     return (+new Date().getTime() % ROUNDING) / ROUNDING;
   }
