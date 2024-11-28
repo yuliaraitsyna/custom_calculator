@@ -7,9 +7,17 @@ class Calculator {
   constructor() {
     this.currentValue = 0;
     this.history = [];
+    this.memory = [];
   }
 
   execute(command) {
+    if (command instanceof MemoryCommand) {
+      command.execute(this);
+      return;
+    }
+
+    this.history.push(this.currentValue);
+
     let result = command.execute(this.currentValue);
 
     if (!isValid(result)) {
@@ -17,14 +25,12 @@ class Calculator {
     }
 
     this.currentValue = result;
-    this.history.push(command);
   }
 
   undo() {
     if (this.history.length === 0) return;
 
-    const command = this.history.pop();
-    this.currentValue = command.undo(this.currentValue);
+    this.currentValue = this.history.pop();
   }
 
   clear() {
@@ -50,11 +56,7 @@ class Add extends Command {
   }
 
   execute(currentValue) {
-    return currentValue + this.value;
-  }
-
-  undo(currentValue) {
-    return currentValue - this.value;
+    return (currentValue * ROUNDING + this.value * ROUNDING) / ROUNDING;
   }
 }
 
@@ -65,11 +67,7 @@ class Subtract extends Command {
   }
 
   execute(currentValue) {
-    return currentValue - this.value;
-  }
-
-  undo(currentValue) {
-    return currentValue + this.value;
+    return (currentValue * ROUNDING - this.value * ROUNDING) / ROUNDING;
   }
 }
 
@@ -81,10 +79,6 @@ class Multiply extends Command {
 
   execute(currentValue) {
     return currentValue * this.value;
-  }
-
-  undo(currentValue) {
-    return currentValue / this.value;
   }
 }
 
@@ -99,10 +93,6 @@ class Divide extends Command {
       throw new Error('Division by zero is not allowed');
     }
     return currentValue / this.value;
-  }
-
-  undo(currentValue) {
-    return currentValue * this.value;
   }
 }
 
@@ -288,37 +278,38 @@ class MemoryCommand {
 
 class MemoryClear extends MemoryCommand {
   execute(calculator) {
-    calculator.history.length = 0;
+    calculator.currentValue = 0;
+    calculator.memory.length = 0;
   }
 }
 
 class MemoryAdd extends MemoryCommand {
   execute(calculator) {
-    if (calculator.history.length >= Array.MAX_SAFE_INTEGER) {
+    if (calculator.memory.length >= Array.MAX_SAFE_INTEGER) {
       throw new Error('memory is overflown');
     }
 
-    calculator.history.push(calculator.previousValue);
+    calculator.memory.push(calculator.currentValue);
   }
 }
 
-class MemorySubtract {
+class MemorySubtract extends MemoryCommand {
   execute(calculator) {
-    if (calculator.history.length === 0) {
+    if (calculator.memory.length === 0) {
       throw new Error('memory is empty');
     }
 
-    calculator.history.length--;
+    calculator.memory.length--;
   }
 }
 
-class MemoryRecall {
+class MemoryRecall extends MemoryCommand {
   execute(calculator) {
-    if (calculator.history.length === 0) {
+    if (calculator.memory.length === 0) {
       throw new Error('memory is empty');
     }
 
-    return calculator.history[calculator.history.length - 1];
+    calculator.currentValue = calculator.memory[calculator.memory.length - 1];
   }
 }
 

@@ -33,74 +33,96 @@ let currentCommand = null;
 
 calculatorDisplay.textContent = currentValue;
 
+const handleErrorState = (error) => {
+  currentValue = '';
+  calculatorDisplay.textContent = 'Error';
+  console.error(error);
+};
 const resetCalculator = () => {
   calculator.clear();
   currentValue = '';
   currentCommand = null;
   isAlreadyFloating = false;
-  calculatorDisplay.textContent = currentValue;
+  calculatorDisplay.textContent = '';
 };
 
 const executeEqual = () => {
-  if (currentCommand && currentValue) {
-    const value = parseFloat(currentValue);
-    console.log('value: ', value);
-    const command = currentCommand(value);
-    console.log(command);
-    calculator.execute(command);
-    currentValue = calculator.currentValue.toString();
-    isAlreadyFloating = currentValue.includes('.');
-    calculatorDisplay.textContent = currentValue;
+  try {
+    if (currentCommand && currentValue) {
+      const value = parseFloat(currentValue);
+
+      const command = currentCommand(value);
+      calculator.execute(command);
+
+      currentValue = calculator.currentValue.toString();
+      isAlreadyFloating = currentValue.includes('.');
+      calculatorDisplay.textContent = currentValue;
+    }
+  } catch (error) {
+    handleErrorState(error);
   }
 };
 
 undoButton.addEventListener('click', () => {
-  calculator.undo();
-  currentValue = calculator.currentValue.toString() || '0';
-  isAlreadyFloating = currentValue.includes('.');
-  calculatorDisplay.textContent = currentValue;
+  try {
+    calculator.undo();
+    currentValue = calculator.currentValue.toString() || '0';
+    isAlreadyFloating = currentValue.includes('.');
+    calculatorDisplay.textContent = currentValue;
+  } catch (error) {
+    handleErrorState(error);
+  }
 });
 
 const updateDisplay = (value, icon) => {
-  if (!currentValue) {
-    currentValue = '';
-  }
+  try {
+    if (!currentValue) {
+      currentValue = '';
+    }
 
-  if (['e', 'π'].includes(icon)) {
-    currentValue = value;
-  } else {
-    currentValue += value;
+    if (['e', 'π'].includes(icon)) {
+      currentValue = value;
+    } else {
+      currentValue += value;
+    }
+
+    calculatorDisplay.textContent = currentValue;
+  } catch (error) {
+    handleErrorState(error);
   }
-  calculatorDisplay.textContent = currentValue;
 };
 
 const handleOperation = (operation) => {
-  if (typeof operation === 'function') {
-    calculator.currentValue = parseFloat(currentValue);
-    currentValue = '';
-    calculatorDisplay.textContent = currentValue;
-    currentCommand = operation;
-    isAlreadyFloating = false;
-
-    if (!operation.length) {
-      const command = currentCommand();
-      calculator.execute(command);
-      currentValue = calculator.currentValue.toString();
-      isAlreadyFloating = currentValue.includes('.');
+  try {
+    if (typeof operation === 'function') {
+      calculator.currentValue = parseFloat(currentValue);
+      currentValue = '';
       calculatorDisplay.textContent = currentValue;
-      return;
-    }
-  }
+      currentCommand = operation;
+      isAlreadyFloating = false;
 
-  switch (operation) {
-    case 'clear':
-      resetCalculator();
-      break;
-    case 'equal':
-      executeEqual();
-      break;
-    default:
-      break;
+      if (!operation.length) {
+        const command = currentCommand();
+        calculator.execute(command);
+        currentValue = calculator.currentValue.toString();
+        isAlreadyFloating = currentValue.includes('.');
+        calculatorDisplay.textContent = currentValue;
+        return;
+      }
+    }
+
+    switch (operation) {
+      case 'clear':
+        resetCalculator();
+        break;
+      case 'equal':
+        executeEqual();
+        break;
+      default:
+        break;
+    }
+  } catch (error) {
+    handleErrorState(error);
   }
 };
 
