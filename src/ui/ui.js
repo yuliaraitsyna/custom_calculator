@@ -80,7 +80,16 @@ const handleOperation = ({ operation, icon }) => {
       }
 
       if (currentValue) {
-        calculatorDisplay.textContent += ` ${icon} `;
+        switch (icon) {
+          case 'ʸ√x':
+            calculatorDisplay.textContent += ` √ `;
+            break;
+          case 'xʸ':
+            calculatorDisplay.textContent += ` ^ `;
+            break;
+          default:
+            calculatorDisplay.textContent += ` ${icon} `;
+        }
       }
 
       currentValue = '';
@@ -114,7 +123,14 @@ const handleOperation = ({ operation, icon }) => {
 
 const handleValue = (value, icon) => {
   if (['e', 'π'].includes(icon)) {
+    resetCalculator();
+
     isAlreadyFloating = true;
+    currentValue = value;
+    calculator.currentValue = value;
+    calculatorDisplay.textContent = value;
+
+    return;
   }
 
   if (value === '.' && isAlreadyFloating) {
@@ -143,8 +159,6 @@ const handleValue = (value, icon) => {
   } else {
     calculator.currentValue = parseFloat(currentValue);
   }
-
-  //updateDisplay(value, icon);
 };
 
 const handleButtonClick = ({ operation, value, icon }) => {
