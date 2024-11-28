@@ -38,8 +38,10 @@ const handleErrorState = (error) => {
   calculatorDisplay.textContent = 'Error';
   console.error(error);
 };
+
 const resetCalculator = () => {
   calculator.clear();
+
   currentValue = '';
   currentCommand = null;
   isAlreadyFloating = false;
@@ -49,14 +51,10 @@ const resetCalculator = () => {
 const executeEqual = () => {
   try {
     if (currentCommand && currentValue) {
-      const value = parseFloat(currentValue);
-
-      const command = currentCommand(value);
-      calculator.execute(command);
-
-      currentValue = calculator.currentValue.toString();
+      currentCommand = null;
+      calculatorDisplay.textContent +=
+        ' = ' + calculator.currentValue.toString();
       isAlreadyFloating = currentValue.includes('.');
-      calculatorDisplay.textContent = currentValue;
     }
   } catch (error) {
     handleErrorState(error);
@@ -74,30 +72,18 @@ undoButton.addEventListener('click', () => {
   }
 });
 
-const updateDisplay = (value, icon) => {
-  try {
-    if (!currentValue) {
-      currentValue = '';
-    }
-
-    if (['e', 'π'].includes(icon)) {
-      currentValue = value;
-    } else {
-      currentValue += value;
-    }
-
-    calculatorDisplay.textContent = currentValue;
-  } catch (error) {
-    handleErrorState(error);
-  }
-};
-
-const handleOperation = (operation) => {
+const handleOperation = ({ operation, icon }) => {
   try {
     if (typeof operation === 'function') {
-      calculator.currentValue = parseFloat(currentValue);
+      if (calculatorDisplay.textContent.includes('=')) {
+        calculatorDisplay.textContent = calculator.currentValue.toString();
+      }
+
+      if (currentValue) {
+        calculatorDisplay.textContent += ` ${icon} `;
+      }
+
       currentValue = '';
-      calculatorDisplay.textContent = currentValue;
       currentCommand = operation;
       isAlreadyFloating = false;
 
@@ -129,7 +115,6 @@ const handleOperation = (operation) => {
 const handleValue = (value, icon) => {
   if (['e', 'π'].includes(icon)) {
     isAlreadyFloating = true;
-    currentValue = value;
   }
 
   if (value === '.' && isAlreadyFloating) {
@@ -143,12 +128,28 @@ const handleValue = (value, icon) => {
     isAlreadyFloating = true;
   }
 
-  updateDisplay(value, icon);
+  if (calculatorDisplay.textContent.includes('=')) {
+    calculatorDisplay.textContent = '';
+  }
+
+  currentValue += value;
+  calculatorDisplay.textContent += value.toString();
+
+  if (currentCommand) {
+    const value = parseFloat(currentValue);
+    const command = currentCommand(value);
+
+    calculator.execute(command);
+  } else {
+    calculator.currentValue = parseFloat(currentValue);
+  }
+
+  //updateDisplay(value, icon);
 };
 
 const handleButtonClick = ({ operation, value, icon }) => {
   if (operation) {
-    handleOperation(operation);
+    handleOperation({ operation, icon });
   } else if (value || icon) {
     handleValue(value, icon);
   }
