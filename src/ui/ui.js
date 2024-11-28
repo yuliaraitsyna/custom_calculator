@@ -36,6 +36,7 @@ calculatorDisplay.textContent = currentValue;
 const handleErrorState = (error) => {
   currentValue = '';
   calculatorDisplay.textContent = 'Error';
+
   console.error(error);
 };
 
@@ -51,10 +52,18 @@ const resetCalculator = () => {
 const executeEqual = () => {
   try {
     if (currentCommand && currentValue) {
-      currentCommand = null;
+      const value = parseFloat(currentValue);
+      const command = currentCommand(value);
+
+      calculator.execute(command);
+
       calculatorDisplay.textContent +=
         ' = ' + calculator.currentValue.toString();
-      isAlreadyFloating = currentValue.includes('.');
+
+      currentValue = calculator.currentValue.toString();
+
+      isAlreadyFloating = false;
+      currentCommand = null;
     }
   } catch (error) {
     handleErrorState(error);
@@ -64,6 +73,7 @@ const executeEqual = () => {
 undoButton.addEventListener('click', () => {
   try {
     calculator.undo();
+
     currentValue = calculator.currentValue.toString() || '0';
     isAlreadyFloating = currentValue.includes('.');
     calculatorDisplay.textContent = currentValue;
@@ -75,6 +85,10 @@ undoButton.addEventListener('click', () => {
 const handleOperation = ({ operation, icon }) => {
   try {
     if (typeof operation === 'function') {
+      if (!currentCommand && currentValue) {
+        calculator.currentValue = parseFloat(currentValue);
+      }
+
       if (calculatorDisplay.textContent.includes('=')) {
         calculatorDisplay.textContent = calculator.currentValue.toString();
       }
@@ -90,6 +104,12 @@ const handleOperation = ({ operation, icon }) => {
           default:
             calculatorDisplay.textContent += ` ${icon} `;
         }
+      }
+
+      if (currentCommand && currentValue) {
+        const value = parseFloat(currentValue);
+        const command = currentCommand(value);
+        calculator.execute(command);
       }
 
       currentValue = '';
@@ -127,7 +147,7 @@ const handleValue = (value, icon) => {
 
     isAlreadyFloating = true;
     currentValue = value;
-    calculator.currentValue = value;
+    calculator.currentValue = parseFloat(value);
     calculatorDisplay.textContent = value;
 
     return;
@@ -150,15 +170,6 @@ const handleValue = (value, icon) => {
 
   currentValue += value;
   calculatorDisplay.textContent += value.toString();
-
-  if (currentCommand) {
-    const value = parseFloat(currentValue);
-    const command = currentCommand(value);
-
-    calculator.execute(command);
-  } else {
-    calculator.currentValue = parseFloat(currentValue);
-  }
 };
 
 const handleButtonClick = ({ operation, value, icon }) => {
